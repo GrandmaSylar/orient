@@ -1,0 +1,70 @@
+{
+  "name": "fees_tracker",
+  "private": true,
+  "version": "1.0.5",
+  "main": "electron/main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development electron electron/main.cjs\"",
+    "build": "tsc -b && vite build",
+    "electron-build": "npm run build && node obfuscate-electron.cjs && electron-builder",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9",
+    "lucide-react": "^1.31.0",
+    "mssql": "^12.7.0",
+    "node-machine-id": "^1.1.12",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.2",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "concurrently": "^10.0.4",
+    "cross-env": "^10.1.0",
+    "electron": "^43.4.0",
+    "electron-builder": "^26.15.3",
+    "javascript-obfuscator": "^4.1.1",
+    "oxlint": "^1.75.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.0",
+    "vite-plugin-javascript-obfuscator": "^3.1.0",
+    "wait-on": "^9.1.0"
+  },
+  "build": {
+    "appId": "com.orient.feestracker",
+    "productName": "Orient Fees Tracker",
+    "icon": "electron/resources/icon.png",
+    "publish": {
+      "provider": "github",
+      "owner": "GrandmaSylar",
+      "repo": "orient"
+    },
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      {
+        "from": "build-electron",
+        "to": "electron"
+      },
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "electron/resources/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true
+    }
+  }
+}
