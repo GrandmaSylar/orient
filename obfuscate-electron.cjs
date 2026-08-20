@@ -73,4 +73,15 @@ filesToObfuscate.forEach((fileName) => {
   fs.writeFileSync(filePath, obfuscatedResult.getObfuscatedCode(), 'utf8');
 });
 
-console.log('Electron files obfuscated successfully.');
+// Copy obfuscated files back into the original electron/ directory
+// so electron-builder can find them without needing from/to remapping
+filesToObfuscate.forEach((fileName) => {
+  const obfuscatedFile = path.join(destDir, fileName);
+  const originalFile = path.join(srcDir, fileName);
+  if (fs.existsSync(obfuscatedFile)) {
+    fs.copyFileSync(obfuscatedFile, originalFile);
+    console.log(`Replaced ${fileName} in electron/ with obfuscated version.`);
+  }
+});
+
+console.log('Electron files obfuscated and replaced successfully.');

@@ -51,11 +51,7 @@
     },
     "files": [
       "dist/**/*",
-      {
-        "from": "build-electron",
-        "to": "electron",
-        "filter": ["**/*"]
-      },
+      "electron/**/*",
       "package.json"
     ],
     "win": {
