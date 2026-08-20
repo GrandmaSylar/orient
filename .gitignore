@@ -29,6 +29,4 @@ release/
 release-builds/
 
 # Sensitive files
-credentials.md
-docker-compose.yml
-generate_license.js
+deployment-docs/

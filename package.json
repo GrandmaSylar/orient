@@ -5,7 +5,7 @@
   "main": "electron/main.cjs",
   "type": "module",
   "scripts": {
-    "dev": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development electron electron/main.cjs\"",
+    "dev": "concurrently -k \"vite\" \"wait-on http://localhost:5174 && cross-env NODE_ENV=development electron electron/main.cjs\"",
     "build": "tsc -b && vite build",
     "electron-build": "npm run build && node obfuscate-electron.cjs && electron-builder",
     "lint": "oxlint",
@@ -62,6 +62,14 @@
       "oneClick": true,
       "allowToChangeInstallationDirectory": false,
       "createDesktopShortcut": true
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "electron/resources/icon.icns"
+    },
+    "dmg": {
+      "title": "Orient Fees Tracker",
+      "background": null
     }
   }
 }

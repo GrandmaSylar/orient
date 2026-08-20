@@ -6,10 +6,10 @@ interface DbWizardProps {
 }
 
 export const DbWizard: React.FC<DbWizardProps> = ({ onSuccess }) => {
-  const [server, setServer] = useState('127.0.0.1');
+  const [server, setServer] = useState('');
   const [port, setPort] = useState('1433');
-  const [database, setDatabase] = useState('FeesTrackerDB');
-  const [user, setUser] = useState('sa');
+  const [database, setDatabase] = useState('');
+  const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
   const [encrypt, setEncrypt] = useState(true);
   const [trustCert, setTrustCert] = useState(true);
@@ -114,7 +114,7 @@ export const DbWizard: React.FC<DbWizardProps> = ({ onSuccess }) => {
                 value={server} 
                 onChange={(e) => setServer(e.target.value)} 
                 required 
-                placeholder="192.168.1.100 or localhost"
+                placeholder="e.g. 192.168.1.100 or localhost"
               />
             </div>
             <div className="form-group">
@@ -125,7 +125,7 @@ export const DbWizard: React.FC<DbWizardProps> = ({ onSuccess }) => {
                 value={port} 
                 onChange={(e) => setPort(e.target.value)} 
                 required 
-                placeholder="1433"
+                placeholder="e.g. 1433"
               />
             </div>
           </div>
@@ -138,7 +138,7 @@ export const DbWizard: React.FC<DbWizardProps> = ({ onSuccess }) => {
               value={database} 
               onChange={(e) => setDatabase(e.target.value)} 
               required 
-              placeholder="FeesTrackerDB"
+              placeholder="e.g. school_fees_db"
             />
           </div>
 
@@ -155,7 +155,7 @@ export const DbWizard: React.FC<DbWizardProps> = ({ onSuccess }) => {
                 value={user} 
                 onChange={(e) => setUser(e.target.value)} 
                 required 
-                placeholder="sa"
+                placeholder="e.g. sa"
               />
             </div>
             <div className="form-group">

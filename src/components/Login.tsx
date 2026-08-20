@@ -194,6 +194,23 @@ export const Login: React.FC<LoginProps> = ({ onSuccess, onResetConfig: _onReset
           >
             {loading ? 'Authenticating...' : 'Sign In'}
           </button>
+
+          <div style={{ marginTop: '16px', textAlign: 'center' }}>
+            <button
+              type="button"
+              onClick={_onResetConfig}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-secondary)',
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                textDecoration: 'underline'
+              }}
+            >
+              Reset Database Connection
+            </button>
+          </div>
         </form>
       </div>
     </div>
