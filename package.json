@@ -53,7 +53,8 @@
       "dist/**/*",
       {
         "from": "build-electron",
-        "to": "electron"
+        "to": "electron",
+        "filter": ["**/*"]
       },
       "package.json"
     ],
