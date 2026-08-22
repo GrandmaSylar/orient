@@ -126,6 +126,22 @@ function App() {
 
   useEffect(() => {
     checkConnection();
+
+    // Periodic check every 5 minutes (300000 ms) to dynamically catch deactivations
+    const interval = setInterval(async () => {
+      try {
+        const licCheck = await window.electronAPI.invoke('lic-check-active');
+        if (!licCheck.active) {
+          setUser(null);
+          setAppState('LICENSE_REQUIRED');
+          showDialog('error', 'License Key Deactivated', licCheck.error || 'This workstation license has been deactivated or revoked.');
+        }
+      } catch (err) {
+        console.error('Periodic license check failed', err);
+      }
+    }, 300000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const checkConnection = async () => {

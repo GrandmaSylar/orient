@@ -52,7 +52,7 @@ declare global {
     invoke(
       channel: 'print-receipt',
       htmlContent: string,
-      options?: { pageSize?: string }
+      options?: { pageSize?: string; landscape?: boolean }
     ): Promise<{ success: boolean; error?: string }>;
     invoke(
       channel: 'lic-get-machine-id'

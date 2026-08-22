@@ -92,6 +92,8 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [postedTxData, setPostedTxData] = useState<any | null>(null);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [receiptSize, setReceiptSize] = useState<'A5' | 'A4' | 'A6' | '80mm' | '58mm'>('A5');
+  const [receiptOrientation, setReceiptOrientation] = useState<'portrait' | 'landscape'>('landscape');
 
   const [orgConfig, setOrgConfig] = useState<any>({
     org_name: 'CO-OPERATIVE CREDIT UNION',
@@ -393,7 +395,237 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
     return txDate === today && tx.username === user.username;
   };
 
-  const generateReceiptHtml = (data: any) => {
+  const generateReceiptHtml = (data: any, pageSize = 'A5', orientation = 'landscape') => {
+    const isThermal = pageSize === '80mm' || pageSize === '58mm';
+    
+    let sizeStyle = 'A5 landscape';
+    let bodyDimensions = 'width: 210mm; height: 148mm; padding: 6mm;';
+    
+    if (pageSize === 'A5') {
+      if (orientation === 'landscape') {
+        sizeStyle = 'A5 landscape';
+        bodyDimensions = 'width: 210mm; height: 148mm; padding: 6mm;';
+      } else {
+        sizeStyle = 'A5 portrait';
+        bodyDimensions = 'width: 148mm; height: 210mm; padding: 6mm;';
+      }
+    } else if (pageSize === 'A4') {
+      if (orientation === 'landscape') {
+        sizeStyle = 'A4 landscape';
+        bodyDimensions = 'width: 297mm; height: 210mm; padding: 10mm;';
+      } else {
+        sizeStyle = 'A4 portrait';
+        bodyDimensions = 'width: 210mm; height: 297mm; padding: 10mm;';
+      }
+    } else if (pageSize === 'A6') {
+      if (orientation === 'landscape') {
+        sizeStyle = 'A6 landscape';
+        bodyDimensions = 'width: 148mm; height: 105mm; padding: 4mm;';
+      } else {
+        sizeStyle = 'A6 portrait';
+        bodyDimensions = 'width: 105mm; height: 148mm; padding: 4mm;';
+      }
+    } else if (pageSize === '80mm') {
+      sizeStyle = '80mm 200mm';
+      bodyDimensions = 'width: 80mm; padding: 4mm;';
+    } else if (pageSize === '58mm') {
+      sizeStyle = '58mm 180mm';
+      bodyDimensions = 'width: 58mm; padding: 2mm;';
+    }
+
+    if (isThermal) {
+      const thermalClass = pageSize === '80mm' ? 'thermal-80' : 'thermal-58';
+      return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Receipt</title>
+          <style>
+            @page {
+              size: ${sizeStyle};
+              margin: 0;
+            }
+            body {
+              font-family: 'Courier New', Courier, monospace;
+              margin: 0;
+              ${bodyDimensions}
+              color: #000;
+              background-color: #fff;
+              box-sizing: border-box;
+            }
+            .thermal-container {
+              width: 100%;
+              box-sizing: border-box;
+            }
+            .header-logo-centered {
+              text-align: center;
+              margin-bottom: 6px;
+            }
+            .thermal-header-text {
+              text-align: center;
+              margin-bottom: 8px;
+            }
+            .thermal-header-text h2 {
+              font-size: 10.5pt;
+              font-weight: bold;
+              margin: 0;
+              text-transform: uppercase;
+            }
+            .thermal-header-text p {
+              font-size: 8pt;
+              margin: 2px 0 0 0;
+              font-weight: bold;
+            }
+            .thermal-divider {
+              border-top: 1px dashed #000;
+              margin: 6px 0;
+            }
+            .thermal-title {
+              text-align: center;
+              font-weight: bold;
+              font-size: 9.5pt;
+              text-transform: uppercase;
+            }
+            .thermal-title-sub {
+              text-align: center;
+              font-size: 8.5pt;
+              font-weight: bold;
+              margin-top: 2px;
+            }
+            .thermal-details {
+              width: 100%;
+              border-collapse: collapse;
+              margin: 8px 0;
+            }
+            .thermal-details td {
+              padding: 2.5px 0;
+              font-size: 8.5pt;
+              vertical-align: top;
+            }
+            .thermal-58 .thermal-details td {
+              font-size: 7.5pt;
+            }
+            .right {
+              text-align: right;
+            }
+            .bold {
+              font-weight: bold;
+            }
+            .thermal-amount-container {
+              text-align: center;
+              padding: 8px 0;
+              margin: 6px 0;
+              border: 1px solid #000;
+            }
+            .thermal-amount-label {
+              font-size: 8pt;
+              font-weight: bold;
+            }
+            .thermal-amount-value {
+              font-size: 13pt;
+              font-weight: bold;
+              margin-top: 2px;
+            }
+            .thermal-58 .thermal-amount-value {
+              font-size: 11pt;
+            }
+            .thermal-words {
+              font-size: 8pt;
+              text-transform: uppercase;
+              text-align: center;
+              font-style: italic;
+              margin: 6px 0;
+              line-height: 1.3;
+            }
+            .thermal-signature-section {
+              margin-top: 30px;
+              text-align: center;
+            }
+            .thermal-sig-line {
+              border-top: 1px solid #000;
+              width: 130px;
+              margin: 0 auto;
+              padding-top: 4px;
+              font-size: 8pt;
+              font-weight: bold;
+            }
+            .thermal-footer {
+              text-align: center;
+              font-size: 7.5pt;
+              margin-top: 20px;
+              line-height: 1.4;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="thermal-container ${thermalClass}">
+            <div class="header-logo-centered">
+              ${orgConfig.logo_url ? `<img src="${orgConfig.logo_url}" style="max-height: 48px; max-width: 58px; object-fit: contain;" />` : `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width: 32px; height: 32px; color: #000;">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                  <path d="M2 12h20M12 2v20" />
+                </svg>
+              `}
+            </div>
+            
+            <div class="thermal-header-text">
+              <h2>${orgConfig.org_name}</h2>
+              <p>${orgConfig.location}</p>
+              <p>${orgConfig.telephone}</p>
+            </div>
+            
+            <div class="thermal-divider"></div>
+            
+            <div class="thermal-title">${orgConfig.school_name}</div>
+            <div class="thermal-title-sub">FEES COLLECTION RECEIPT</div>
+            
+            <div class="thermal-divider"></div>
+            
+            <table class="thermal-details">
+              <tr><td style="width: 40%;">Receipt No:</td><td class="bold right">${data.receiptNo}</td></tr>
+              <tr><td>Date:</td><td class="right">${data.date}</td></tr>
+              <tr><td>Student ID:</td><td class="right">${data.studentId}</td></tr>
+              <tr><td>Student Name:</td><td class="right bold">${data.studentName}</td></tr>
+              <tr><td>Class:</td><td class="right">${data.studentClass}</td></tr>
+              <tr><td>Term:</td><td class="right">${data.termName}</td></tr>
+              <tr><td>Academic Year:</td><td class="right">${data.year}</td></tr>
+              <tr><td>Paid By:</td><td class="right">${data.paidBy}</td></tr>
+            </table>
+            
+            <div class="thermal-divider"></div>
+            
+            <div class="thermal-amount-container">
+              <div class="thermal-amount-label">AMOUNT PAID</div>
+              <div class="thermal-amount-value">GHC ${data.amount.toFixed(2)}</div>
+            </div>
+            
+            <div class="thermal-words">${data.amountWords}</div>
+            
+            <div class="thermal-divider"></div>
+            
+            <table class="thermal-details">
+              <tr><td style="width: 45%;">Guardian Number:</td><td class="right">${data.guardianPhone || 'N/A'}</td></tr>
+              <tr><td>Received By:</td><td class="right">${data.receivedBy}</td></tr>
+            </table>
+            
+            <div class="thermal-divider"></div>
+            
+            <div class="thermal-signature-section">
+              <div class="thermal-sig-line">Cashier Signature</div>
+            </div>
+            
+            <div class="thermal-footer">
+              Thank you for choosing our Credit Union.<br>
+              Generated at: ${new Date().toLocaleTimeString()}
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+    }
+
+    // Standard Layout (A5 / A4)
     return `
       <!DOCTYPE html>
       <html>
@@ -401,17 +633,15 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
         <title>Receipt</title>
         <style>
           @page {
-            size: A5 landscape;
+            size: ${sizeStyle};
             margin: 0;
           }
           body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 8mm;
+            ${bodyDimensions}
             color: #1e293b;
             font-size: 10pt;
-            width: 210mm;
-            height: 148mm;
             box-sizing: border-box;
             background-color: #fff;
           }
@@ -421,7 +651,7 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
             height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-start;
             box-sizing: border-box;
             background: radial-gradient(circle, rgba(248,250,252,0.6) 0%, rgba(255,255,255,1) 100%);
             position: relative;
@@ -526,7 +756,7 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-top: auto;
+            margin-top: 16px;
             padding-top: 4px;
             z-index: 1;
             position: relative;
@@ -563,7 +793,7 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
             align-items: center;
             border-top: 1px dashed #e2e8f0;
             padding-top: 4px;
-            margin-top: 4px;
+            margin-top: 12px;
             z-index: 1;
             position: relative;
           }
@@ -1207,8 +1437,60 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
         <div className="modal-overlay" style={{ zIndex: 10300 }}>
           <div className="modal-content animate-scale-in" style={{ maxWidth: '860px', width: '95%', padding: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>Receipt Preview (A5 Landscape)</h3>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>
+                Receipt Preview ({receiptSize} {receiptSize !== '80mm' && receiptSize !== '58mm' ? receiptOrientation.charAt(0).toUpperCase() + receiptOrientation.slice(1) : ''})
+              </h3>
               <button className="btn btn-secondary" onClick={() => setShowPreviewModal(false)} style={{ padding: '4px 8px' }}>✕</button>
+            </div>
+
+            {/* Sizing & Orientation Selectors */}
+            <div style={{ 
+              display: 'flex', 
+              gap: '16px', 
+              marginBottom: '16px', 
+              padding: '12px', 
+              backgroundColor: '#f8fafc', 
+              borderRadius: 'var(--radius-sm)', 
+              border: '1px solid var(--border-color)',
+              alignItems: 'center',
+              flexWrap: 'wrap'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginRight: '8px' }}>Paper Size:</label>
+                <select
+                  value={receiptSize}
+                  onChange={(e) => {
+                    const size = e.target.value as any;
+                    setReceiptSize(size);
+                    if (size === '80mm' || size === '58mm') {
+                      setReceiptOrientation('portrait');
+                    }
+                  }}
+                  className="form-control"
+                  style={{ width: '160px', display: 'inline-block', padding: '6px 10px', height: 'auto' }}
+                >
+                  <option value="A5">A5 (Standard)</option>
+                  <option value="A4">A4 (Full Page)</option>
+                  <option value="A6">A6</option>
+                  <option value="80mm">Thermal 80mm</option>
+                  <option value="58mm">Thermal 58mm</option>
+                </select>
+              </div>
+
+              {(receiptSize === 'A5' || receiptSize === 'A4' || receiptSize === 'A6') && (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginRight: '8px' }}>Orientation:</label>
+                  <select
+                    value={receiptOrientation}
+                    onChange={(e) => setReceiptOrientation(e.target.value as any)}
+                    className="form-control"
+                    style={{ width: '130px', display: 'inline-block', padding: '6px 10px', height: 'auto' }}
+                  >
+                    <option value="landscape">Landscape</option>
+                    <option value="portrait">Portrait</option>
+                  </select>
+                </div>
+              )}
             </div>
 
             {/* Receipt iframe preview scaled to fit panel */}
@@ -1219,14 +1501,32 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
               backgroundColor: '#f1f5f9',
               display: 'flex',
               justifyContent: 'center',
-              padding: '24px 0'
+              padding: '24px 0',
+              maxHeight: '60vh',
+              overflowY: 'auto'
             }}>
               <iframe
                 title="Receipt Preview"
-                srcDoc={generateReceiptHtml(postedTxData)}
+                srcDoc={generateReceiptHtml(postedTxData, receiptSize, receiptOrientation)}
                 style={{
-                  width: '210mm',
-                  height: '148mm',
+                  width: receiptSize === 'A5' 
+                    ? (receiptOrientation === 'landscape' ? '210mm' : '148mm')
+                    : receiptSize === 'A4'
+                    ? (receiptOrientation === 'landscape' ? '297mm' : '210mm')
+                    : receiptSize === 'A6'
+                    ? (receiptOrientation === 'landscape' ? '148mm' : '105mm')
+                    : receiptSize === '80mm'
+                    ? '80mm'
+                    : '58mm',
+                  height: receiptSize === 'A5'
+                    ? (receiptOrientation === 'landscape' ? '148mm' : '210mm')
+                    : receiptSize === 'A4'
+                    ? (receiptOrientation === 'landscape' ? '210mm' : '297mm')
+                    : receiptSize === 'A6'
+                    ? (receiptOrientation === 'landscape' ? '105mm' : '148mm')
+                    : receiptSize === '80mm'
+                    ? '160mm'
+                    : '140mm',
                   border: 'none',
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                   backgroundColor: 'white'
@@ -1244,8 +1544,11 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
               <button 
                 className="btn btn-primary" 
                 onClick={async () => {
-                  const printHtml = generateReceiptHtml(postedTxData);
-                  await window.electronAPI.invoke('print-receipt', printHtml);
+                  const printHtml = generateReceiptHtml(postedTxData, receiptSize, receiptOrientation);
+                  await window.electronAPI.invoke('print-receipt', printHtml, {
+                    pageSize: receiptSize,
+                    landscape: receiptOrientation === 'landscape'
+                  });
                 }}
                 style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}
               >

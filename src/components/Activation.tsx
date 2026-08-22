@@ -127,6 +127,7 @@ export const Activation: React.FC<ActivationProps> = ({ onSuccess }) => {
               value={licenseKey} 
               onChange={(e) => setLicenseKey(e.target.value)} 
               required 
+              maxLength={15}
               placeholder="e.g. X89H2P9L3K5M7W1"
               disabled={loading}
               style={{ borderRadius: '10px', padding: '12px 14px', fontSize: '0.95rem', width: '100%', outline: 'none', letterSpacing: '0.5px' }}
