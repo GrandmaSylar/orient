@@ -1,1 +1,192 @@
-function _0x1d4a(){const _0x2a35b4=['mZiWoeHnvwHmuq','ndq0ngP4ChDPwa','zgLNzxn0','mte1mdrNvLnUu0W','CM9SBgjHy2S','BxnZCwW','CMvJB3jKC2v0','cIaGicaGicaGAw5Zzxj0igLUDg8GDxnLCNmGkhvZzxjUyw1LlcbWyxnZD29Yzf9OyxnOlcbYB2XLlcbPC19Hy3rPDMuPcIaGicaGicaGDMfSDwvZiaOGicaGicaGicaGkcDHzg1PBICSicC','mteXodiYv0PizM5e','cIaGicaGigLMig5VDcbLEgLZDhmGkhnLBgvJDcaQigzYB20GC3LZB2jQzwn0CYb3AgvYzsbUyw1LpsDVCMDFy29UzMLNjYbHBMqGEhr5Cgu9j1uNkqOGicaGicbIzwDPBGOGicaGicaGignYzwf0zsb0ywjSzsbVCMDFy29UzMLNicGkicaGicaGicaGigLKigLUDcbWCMLTyxj5igTLEsbKzwzHDwX0ideGy2HLy2SGkgLKid0GmsKScIaGicaGicaGicbVCMDFBMfTzsb2yxjJAgfYkde1mcKGzgvMyxvSDcaNr1jbq0uGqKfqveLtvcbduKvesvqGvu5jt04Nig5VDcbUDwXSlaOGicaGicaGicaGBg9JyxrPB24GDMfYy2HHCIGXntaPigrLzMf1BhqGj0fnquTpts1lvu1bu0KNig5VDcbUDwXSlaOGicaGicaGicaGDgvSzxbOB25LihzHCMnOyxiOmtaWksbKzwzHDwX0icDuruW6idaYndq3ntC0ndCVmdiWnZq0nZaXnICGBM90ig51BgWScIaGicaGicaGicbZy2HVB2XFBMfTzsb2yxjJAgfYkde1mcKGzgvMyxvSDcaNu3bHy2uGqwnHzgvTEsCGBM90ig51BgWScIaGicaGicaGicbSB2DVx3vYBcb2yxjJAgfYkg1HEcKGBNvSBaOGicaGicaGicK7cIaGicaGicaGAw5Zzxj0igLUDg8GB3jNx2nVBMzPzYaOB3jNx25HBwuSigXVy2f0Aw9Ulcb0zwXLCgHVBMuSihnJAg9VBf9Uyw1LkqOGicaGicaGihzHBhvLCYaOj0Dsqunfiejbufrju1qGq1jfreLuifvosu9ojYWGj0fnquTpts1lvu1bu0KNlcaNvevmoIaWmJq0nZu3ndq3lZaYmdC0ndCWmtyNlcaNu3bHy2uGqwnHzgvTEsCPoWOGicaGicbLBMqkicaGia','Bg9N','yMvNAw4','CxvLCNK','C2HHmJu2','sw5PDgLHBgL6Aw5NigrHDgfIyxnLihrHyMXLCY4UlG','y291BNq','mJi4otuYmunwrxjWDW','zxjYB3i','cIaGicaGicaGicbPBNnLCNqGAw50BYb1C2vYCYaODxnLCM5HBwuSihbHC3n3B3jKx2HHC2GSihjVBguSigLZx2fJDgL2zsKkicaGicaGicaGihzHBhvLCYaOj2DYyw5KBweNlcaN','C2vSzwn0ignVDw50kcOPigfZignVDw50igzYB20GDxnLCNm','mtuWDMrptxPl','u2vLzgLUzYbKzwzHDwX0igfJywrLBwLJihrLCM0UlI4','jYWGj0fetuLojYWGmsKkicaGicaG','DxbKyxrL','ndeWn0DUB3PHCa','mJm1mMn0r2LKzq','ywrTAw4XmJm','cIaGicaGigLMig5VDcbLEgLZDhmGkhnLBgvJDcaQigzYB20GC3LZB2jQzwn0CYb3AgvYzsbUyw1LpsDZDhvKzw50CYCGyw5KihH0ExbLpsDvjYKkicaGicaGy3jLyxrLihrHyMXLihn0DwrLBNrZicGkicaGicaGicbPzcbPBNqGAwrLBNrPDhKOmsWXksbWCMLTyxj5igTLEsWkicaGicaGicbZDhvKzw50x2LKihzHCMnOyxiOntaPihvUAxf1zsbUB3qGBNvSBcWkicaGicaGicbMDwXSx25HBwuGDMfYy2HHCIGXntaPig5VDcbUDwXSlaOGicaGicaGigrVyIbKyxrLig51BgWScIaGicaGicaGz3jHzgvFy2XHC3mGDMfYy2HHCIG1mcKGBM90ig51BgWScIaGicaGicaGz3vHCMrPyw5FCgHVBMuGDMfYy2HHCIGYmcKGBM90ig51BgWScIaGicaGicaGAxnFywn0AxzLigjPDcbKzwzHDwX0ideGBM90ig51BgWScIaGicaGicaGy3jLyxrLzf9HDcbKyxrLDgLTzsbKzwzHDwX0igDLDgrHDguOksbUB3qGBNvSBaOGicaGicaPoWOGicaG','y3j5ChrV','mtj3Curby1C','cIaGicaGigLMig5VDcbLEgLZDhmGkhnLBgvJDcaQigzYB20GC3LZB2jQzwn0CYb3AgvYzsbUyw1LpsDHy2fKzw1Py190zxjTCYCGyw5KihH0ExbLpsDvjYKkicaGicaGy3jLyxrLihrHyMXLigfJywrLBwLJx3rLCM1ZicGkicaGicaGicbPzcbPBNqGAwrLBNrPDhKOmsWXksbWCMLTyxj5igTLEsWkicaGicaGicbHy2fKzw1Py195zwfYihzHCMnOyxiOmJaPig5VDcbUDwXSlaOGicaGicaGihrLCM1FBMfTzsb2yxjJAgfYkdiWksbUB3qGBNvSBcWkicaGicaGicbPC19Hy3rPDMuGyML0igrLzMf1BhqGmcbUB3qGBNvSBcWkicaGicaGicbJCMvHDgvKx2f0igrHDgv0Aw1LigrLzMf1BhqGz2v0zgf0zsGPig5VDcbUDwXScIaGicaGicK7cIaGica','jYWGj0fetuLojYWGmsKkicaGicaGica','nduYnJeWsvHSyuvQ','C2vSzwn0ignVDw50kcOPigfZignVDw50igzYB20GywnHzgvTAwnFDgvYBxm','cIaGicaGigLMig5VDcbLEgLZDhmGkhnLBgvJDcaQigzYB20GC3LZB2jQzwn0CYb3AgvYzsbUyw1LpsD1C2vYCYCGyw5KihH0ExbLpsDvjYKkicaGicaGy3jLyxrLihrHyMXLihvZzxjZicGkicaGicaGicbPzcbPBNqGAwrLBNrPDhKOmsWXksbWCMLTyxj5igTLEsWkicaGicaGicb1C2vYBMfTzsb2yxjJAgfYkduWksb1BMLXDwuGBM90ig51BgWScIaGicaGicaGCgfZC3DVCMrFAgfZAcb2yxjJAgfYkdi1nsKGBM90ig51BgWScIaGicaGicaGCM9Szsb2yxjJAgfYkdiWksbUB3qGBNvSBcWGls0Gj1rfteXfuICSicDtvvbfuLzju09sjYWGj0fetuLojWOGicaGicaGigLZx2fJDgL2zsbIAxqGzgvMyxvSDcaXig5VDcbUDwXSlaOGicaGicaGignYzwf0zwrFyxqGzgf0zxrPBwuGzgvMyxvSDcbNzxrKyxrLkcKGBM90ig51BgWkicaGicaGktSkicaGia','mtrKBeTzrfq','cIaGicaGigLMig5VDcbLEgLZDhmGkhnLBgvJDcaQigzYB20GC3LZB2jQzwn0CYb3AgvYzsbUyw1LpsDWCM9KDwn0CYCGyw5KihH0ExbLpsDvjYKkicaGicaGy3jLyxrLihrHyMXLihbYB2r1y3rZicGkicaGicaGicbPzcbPBNqGAwrLBNrPDhKOmsWXksbWCMLTyxj5igTLEsWkicaGicaGicbUyw1LihzHCMnOyxiOmtaWksb1BMLXDwuGBM90ig51BgWScIaGicaGicaGzgvZy3jPChrPB24GDMfYy2HHCIGYntuPlaOGicaGicaGigLZx2fJDgL2zsbIAxqGzgvMyxvSDcaXig5VDcbUDwXSlaOGicaGicaGignYzwf0zwrFyxqGzgf0zxrPBwuGzgvMyxvSDcbNzxrKyxrLkcKGBM90ig51BgWkicaGicaGktSkicaGia','mZiWuK9lsMP3','cIaGicaGigLMig5VDcbLEgLZDhmGkhnLBgvJDcaQigzYB20GC3LZB2jQzwn0CYb3AgvYzsbUyw1LpsDHDwrPDf9SB2DZjYbHBMqGEhr5Cgu9j1uNkqOGicaGicbJCMvHDguGDgfIBguGyxvKAxrFBg9NCYaOcIaGicaGicaGAwqGAw50igLKzw50Axr5kdeSmsKGChjPBwfYEsbRzxKScIaGicaGicaGDxnLCL9PzcbPBNqGzM9YzwLNBIbRzxKGCMvMzxjLBMnLCYb1C2vYCYHPzcKScIaGicaGicaGywn0Aw9UihzHCMnOyxiOntaPig5VDcbUDwXSlaOGicaGicaGigrLDgfPBhmGBNzHCMnOyxiOBwf4ksbUB3qGBNvSBcWkicaGicaGicbPCf9HzgrYzxnZihzHCMnOyxiOnduPlaOGicaGicaGignYzwf0zwrFyxqGzgf0zxrPBwuGzgvMyxvSDcbNzxrKyxrLkcKGBM90ig51BgWkicaGicaGktSkicaGia','zxHWB3j0CW','ntKYmde4owLMq2TlqG','Agv4','mZmZseXuu1nN','u2vLzgLUzYbKzwzHDwX0igfKBwLUAxn0CMf0B3iGywnJB3vUDhmUlI4','qNjLywTMyxn0qdLHBq','cIaGicaGigLMig5VDcbLEgLZDhmGkhnLBgvJDcaQigzYB20GC3LZB2jQzwn0CYb3AgvYzsbUyw1LpsD0CMfUC2fJDgLVBNmNigfUzcb4DhLWzt0NvsCPcIaGicaGignYzwf0zsb0ywjSzsb0CMfUC2fJDgLVBNmGkaOGicaGicaGigLKigLUDcbPzgvUDgL0EsGXldePihbYAw1HCNKGA2v5laOGicaGicaGihjLy2vPChrFBNvTyMvYihzHCMnOyxiOntaPihvUAxf1zsbUB3qGBNvSBcWkicaGicaGicbZDhvKzw50x2LKigLUDcbMB3jLAwDUigTLEsbYzwzLCMvUy2vZihn0DwrLBNrZkgLKksbUB3qGBNvSBcWkicaGicaGicbWCM9KDwn0x2LKigLUDcbMB3jLAwDUigTLEsbYzwzLCMvUy2vZihbYB2r1y3rZkgLKksbUB3qGBNvSBcWkicaGicaGicb0zxjTx2LKigLUDcbMB3jLAwDUigTLEsbYzwzLCMvUy2vZigfJywrLBwLJx3rLCM1ZkgLKksbUB3qGBNvSBcWkicaGicaGicbHBw91BNqGzgvJAw1HBcGXocWYksbUB3qGBNvSBcWkicaGicaGicbWywLKx2j5ihzHCMnOyxiOmtuWksbUB3qGBNvSBcWkicaGicaGicbUyxjYyxrPB24GDMfYy2HHCIGYntuPlaOGicaGicaGihn0DwrLBNrFy2XHC3nFC25HChnOB3qGDMfYy2HHCIG1mcKGBM90ig51BgWScIaGicaGicaGz3vHCMrPyw5FCgHVBMvFC25HChnOB3qGDMfYy2HHCIGYmcKGBM90ig51BgWScIaGicaGicaGC3rHDhvZihzHCMnOyxiOmJaPigrLzMf1BhqGj1bpu1rfrcCGBM90ig51BgWScIaGicaGicaGDM9Pzf9YzwfZB24GDMfYy2HHCIGYntuPlaOGicaGicaGihzVAwrLzf9IEsbPBNqGzM9YzwLNBIbRzxKGCMvMzxjLBMnLCYb1C2vYCYHPzcKScIaGicaGicaGDM9PzgvKx2f0igrHDgv0Aw1LlaOGicaGicaGignYzwf0zwrFyNKGAw50igzVCMvPz24GA2v5ihjLzMvYzw5JzxmGDxnLCNmOAwqPig5VDcbUDwXSlaOGicaGicaGignYzwf0zwrFyxqGzgf0zxrPBwuGzgvMyxvSDcbNzxrKyxrLkcKGBM90ig51BgWkicaGicaGktSkicaGia'];_0x1d4a=function(){return _0x2a35b4;};return _0x1d4a();}const _0x4688bd=_0x3edc;(function(_0x57acfe,_0x526aea){const _0x81c47=_0x3edc,_0x2ba476=_0x57acfe();while(!![]){try{const _0x4c42ff=parseInt(_0x81c47(0x1e5))/0x1*(parseInt(_0x81c47(0x1f1))/0x2)+-parseInt(_0x81c47(0x1d8))/0x3*(parseInt(_0x81c47(0x1ef))/0x4)+-parseInt(_0x81c47(0x1d4))/0x5*(parseInt(_0x81c47(0x1f6))/0x6)+parseInt(_0x81c47(0x1d9))/0x7*(-parseInt(_0x81c47(0x1ee))/0x8)+-parseInt(_0x81c47(0x1ea))/0x9*(-parseInt(_0x81c47(0x1e0))/0xa)+parseInt(_0x81c47(0x1e8))/0xb*(-parseInt(_0x81c47(0x1dd))/0xc)+parseInt(_0x81c47(0x1d0))/0xd*(parseInt(_0x81c47(0x1e3))/0xe);if(_0x4c42ff===_0x526aea)break;else _0x2ba476['push'](_0x2ba476['shift']());}catch(_0x2d3356){_0x2ba476['push'](_0x2ba476['shift']());}}}(_0x1d4a,0xe51aa));const sql=require(_0x4688bd(0x1f3)),crypto=require(_0x4688bd(0x1dc));function hashPassword(_0x7e31f4){const _0x1beefc=_0x4688bd;return crypto['createHash'](_0x1beefc(0x1fb))[_0x1beefc(0x1d7)](_0x7e31f4)[_0x1beefc(0x1f0)](_0x1beefc(0x1e9));}function _0x3edc(_0x38003f,_0x54b9c8){_0x38003f=_0x38003f-0x1d0;const _0x1d4aa6=_0x1d4a();let _0x3edca9=_0x1d4aa6[_0x38003f];if(_0x3edc['qATBOo']===undefined){var _0x49648c=function(_0x5ba459){const _0x1b923d='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x7e31f4='',_0x4aef7a='';for(let _0x4c9a0a=0x0,_0x58236d,_0x292ff9,_0x5f0159=0x0;_0x292ff9=_0x5ba459['charAt'](_0x5f0159++);~_0x292ff9&&(_0x58236d=_0x4c9a0a%0x4?_0x58236d*0x40+_0x292ff9:_0x292ff9,_0x4c9a0a++%0x4)?_0x7e31f4+=String['fromCharCode'](0xff&_0x58236d>>(-0x2*_0x4c9a0a&0x6)):0x0){_0x292ff9=_0x1b923d['indexOf'](_0x292ff9);}for(let _0x43d53b=0x0,_0x49390b=_0x7e31f4['length'];_0x43d53b<_0x49390b;_0x43d53b++){_0x4aef7a+='%'+('00'+_0x7e31f4['charCodeAt'](_0x43d53b)['toString'](0x10))['slice'](-0x2);}return decodeURIComponent(_0x4aef7a);};_0x3edc['QpXpHb']=_0x49648c,_0x3edc['KZvIPL']={},_0x3edc['qATBOo']=!![];}const _0x1b847f=_0x1d4aa6[0x0],_0x19e171=_0x38003f+_0x1b847f,_0x419e96=_0x3edc['KZvIPL'][_0x19e171];return!_0x419e96?(_0x3edca9=_0x3edc['QpXpHb'](_0x3edca9),_0x3edc['KZvIPL'][_0x19e171]=_0x3edca9):_0x3edca9=_0x419e96,_0x3edca9;}async function initializeDatabase(_0x4aef7a){const _0x177057=_0x4688bd,_0x4c9a0a=new sql['Transaction'](_0x4aef7a);try{await _0x4c9a0a[_0x177057(0x1f9)]();const _0x58236d=new sql['Request'](_0x4c9a0a);console[_0x177057(0x1f8)](_0x177057(0x1fc)),await _0x58236d[_0x177057(0x1fa)](_0x177057(0x1e2)),await _0x58236d['query'](_0x177057(0x1de)),await _0x58236d[_0x177057(0x1fa)](_0x177057(0x1db)),await _0x58236d[_0x177057(0x1fa)]('\x0a\x20\x20\x20\x20\x20\x20if\x20exists\x20(select\x20*\x20from\x20sys.columns\x20where\x20object_id\x20=\x20object_id(\x27students\x27)\x20and\x20name\x20=\x20\x27dob\x27)\x0a\x20\x20\x20\x20\x20\x20begin\x0a\x20\x20\x20\x20\x20\x20\x20\x20alter\x20table\x20students\x20alter\x20column\x20dob\x20date\x20null;\x0a\x20\x20\x20\x20\x20\x20end\x0a\x20\x20\x20\x20'),await _0x58236d[_0x177057(0x1fa)](_0x177057(0x1e4)),await _0x58236d[_0x177057(0x1fa)](_0x177057(0x1ed)),await _0x58236d[_0x177057(0x1fa)](_0x177057(0x1e6));const _0x292ff9=await _0x58236d['query'](_0x177057(0x1d3));if(_0x292ff9[_0x177057(0x1f4)][0x0][_0x177057(0x1fd)]===0x0){console[_0x177057(0x1f8)](_0x177057(0x1eb));const _0x43d53b=hashPassword(_0x177057(0x1da)),_0x49390b=hashPassword(_0x177057(0x1ec));await _0x58236d[_0x177057(0x1fa)](_0x177057(0x1f5)+_0x43d53b+'\x27,\x20\x27ADMIN\x27,\x201),\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20(\x27grandma\x27,\x20\x27'+_0x49390b+_0x177057(0x1d6));}else{const _0x16a9e2=await _0x58236d[_0x177057(0x1fa)]('select\x20count(*)\x20as\x20count\x20from\x20users\x20where\x20username\x20=\x20\x27grandma\x27');if(_0x16a9e2[_0x177057(0x1f4)][0x0][_0x177057(0x1fd)]===0x0){console[_0x177057(0x1f8)]('Seeding\x20grandma\x20superadmin\x20account...');const _0x55110b=hashPassword(_0x177057(0x1ec));await _0x58236d[_0x177057(0x1fa)](_0x177057(0x1d2)+_0x55110b+_0x177057(0x1df));}}const _0x5f0159=await _0x58236d['query'](_0x177057(0x1e1));return _0x5f0159[_0x177057(0x1f4)][0x0][_0x177057(0x1fd)]===0x0&&(console[_0x177057(0x1f8)](_0x177057(0x1d5)),await _0x58236d['query']('\x0a\x20\x20\x20\x20\x20\x20\x20\x20insert\x20into\x20academic_terms\x20(academic_year,\x20term_name,\x20is_active)\x0a\x20\x20\x20\x20\x20\x20\x20\x20values\x20(\x272025/2026\x27,\x20\x27Term\x201\x27,\x201)\x0a\x20\x20\x20\x20\x20\x20')),await _0x58236d[_0x177057(0x1fa)](_0x177057(0x1f7)),await _0x4c9a0a['commit'](),console['log']('Database\x20initialization\x20completed\x20successfully.'),{'success':!![]};}catch(_0x3380f4){await _0x4c9a0a[_0x177057(0x1f2)](),console[_0x177057(0x1d1)]('Database\x20initialization\x20failed,\x20transaction\x20rolled\x20back:',_0x3380f4);throw _0x3380f4;}}module[_0x4688bd(0x1e7)]={'initializeDatabase':initializeDatabase,'hashPassword':hashPassword};
+const sql = require('mssql');
+const crypto = require('crypto');
+
+// SHA256 helper for password hashing without native binary dependencies
+function hashPassword(password) {
+  return crypto.createHash('sha256').update(password).digest('hex');
+}
+
+async function initializeDatabase(pool) {
+  const transaction = new sql.Transaction(pool);
+  
+  try {
+    await transaction.begin();
+    const request = new sql.Request(transaction);
+
+    console.log('Initializing database tables...');
+
+    // 1. Create Users Table
+    await request.query(`
+      if not exists (select * from sysobjects where name='users' and xtype='U')
+      create table users (
+        id int identity(1,1) primary key,
+        username varchar(50) unique not null,
+        password_hash varchar(255) not null,
+        role varchar(20) not null, -- 'TELLER', 'SUPERVISOR', 'ADMIN'
+        is_active bit default 1 not null,
+        created_at datetime default getdate() not null
+      );
+    `);
+
+    // 2. Create Academic Terms Table
+    await request.query(`
+      if not exists (select * from sysobjects where name='academic_terms' and xtype='U')
+      create table academic_terms (
+        id int identity(1,1) primary key,
+        academic_year varchar(20) not null,
+        term_name varchar(20) not null,
+        is_active bit default 0 not null,
+        created_at datetime default getdate() not null
+      );
+    `);
+
+    // 3. Create Students Table
+    await request.query(`
+      if not exists (select * from sysobjects where name='students' and xtype='U')
+      create table students (
+        id int identity(1,1) primary key,
+        student_id varchar(50) unique not null,
+        full_name varchar(150) not null,
+        dob date null,
+        grade_class varchar(50) not null,
+        guardian_phone varchar(20) not null,
+        is_active bit default 1 not null,
+        created_at datetime default getdate() not null
+      );
+    `);
+
+    // Migration to ensure existing students.dob column is nullable
+    await request.query(`
+      if exists (select * from sys.columns where object_id = object_id('students') and name = 'dob')
+      begin
+        alter table students alter column dob date null;
+      end
+    `);
+
+    // 4. Create Products Table
+    await request.query(`
+      if not exists (select * from sysobjects where name='products' and xtype='U')
+      create table products (
+        id int identity(1,1) primary key,
+        name varchar(100) unique not null,
+        description varchar(255),
+        is_active bit default 1 not null,
+        created_at datetime default getdate() not null
+      );
+    `);
+
+    // 5. Create Transactions Table
+    await request.query(`
+      if not exists (select * from sysobjects where name='transactions' and xtype='U')
+      create table transactions (
+        id int identity(1,1) primary key,
+        receipt_number varchar(50) unique not null,
+        student_id int foreign key references students(id) not null,
+        product_id int foreign key references products(id) not null,
+        term_id int foreign key references academic_terms(id) not null,
+        amount decimal(18,2) not null,
+        paid_by varchar(150) not null,
+        narration varchar(255),
+        student_class_snapshot varchar(50) not null,
+        guardian_phone_snapshot varchar(20) not null,
+        status varchar(20) default 'POSTED' not null,
+        void_reason varchar(255),
+        voided_by int foreign key references users(id),
+        voided_at datetime,
+        created_by int foreign key references users(id) not null,
+        created_at datetime default getdate() not null
+      );
+    `);
+
+    // 6. Create Audit Logs Table
+    await request.query(`
+      if not exists (select * from sysobjects where name='audit_logs' and xtype='U')
+      create table audit_logs (
+        id int identity(1,1) primary key,
+        user_id int foreign key references users(id),
+        action varchar(50) not null,
+        details nvarchar(max) not null,
+        ip_address varchar(45),
+        created_at datetime default getdate() not null
+      );
+    `);
+
+    // 7. Seed Default Admin if no users exist
+    const userCheck = await request.query('select count(*) as count from users');
+    if (userCheck.recordset[0].count === 0) {
+      console.log('Seeding default administrator accounts...');
+      const adminPassHash = hashPassword('admin123'); // Default password
+      const grandmaPassHash = hashPassword('Breakfast@9am'); // Grandma superadmin
+      const devPassHash = hashPassword('Orient@ElectricFan!'); // Dev account
+      await request.query(`
+        insert into users (username, password_hash, role, is_active)
+        values 
+          ('admin', '${adminPassHash}', 'ADMIN', 1),
+          ('grandma', '${grandmaPassHash}', 'ADMIN', 1),
+          ('dev', '${devPassHash}', 'DEV', 1)
+      `);
+    } else {
+      // If table exists but grandma is missing, seed her specifically
+      const grandmaCheck = await request.query("select count(*) as count from users where username = 'grandma'");
+      if (grandmaCheck.recordset[0].count === 0) {
+        console.log('Seeding grandma superadmin account...');
+        const grandmaPassHash = hashPassword('Breakfast@9am');
+        await request.query(`
+          insert into users (username, password_hash, role, is_active)
+          values ('grandma', '${grandmaPassHash}', 'ADMIN', 1)
+        `);
+      }
+
+      // If dev is missing, seed it specifically
+      const devCheck = await request.query("select count(*) as count from users where username = 'dev'");
+      if (devCheck.recordset[0].count === 0) {
+        console.log('Seeding developer account...');
+        const devPassHash = hashPassword('Orient@ElectricFan!');
+        await request.query(`
+          insert into users (username, password_hash, role, is_active)
+          values ('dev', '${devPassHash}', 'DEV', 1)
+        `);
+      }
+    }
+
+    // 8. Seed Default Term if none exist
+    const termCheck = await request.query('select count(*) as count from academic_terms');
+    if (termCheck.recordset[0].count === 0) {
+      console.log('Seeding default academic term...');
+      await request.query(`
+        insert into academic_terms (academic_year, term_name, is_active)
+        values ('2025/2026', 'Term 1', 1)
+      `);
+    }
+
+    // 9. Create Org Config Table
+    await request.query(`
+      if not exists (select * from sysobjects where name='org_config' and xtype='U')
+      begin
+        create table org_config (
+          id int primary key default 1 check (id = 1),
+          org_name varchar(150) default 'GRACE BAPTIST CREDIT UNION' not null,
+          location varchar(150) default 'AMAKOM-KUMASI' not null,
+          telephone varchar(100) default 'TEL: 0244757447/0207447016' not null,
+          school_name varchar(150) default 'Space Academy' not null,
+          logo_url varchar(max) null
+        );
+        insert into org_config (org_name, location, telephone, school_name)
+        values ('GRACE BAPTIST CREDIT UNION', 'AMAKOM-KUMASI', 'TEL: 0244757447/0207447016', 'Space Academy');
+      end
+    `);
+
+    await transaction.commit();
+    console.log('Database initialization completed successfully.');
+    return { success: true };
+  } catch (err) {
+    await transaction.rollback();
+    console.error('Database initialization failed, transaction rolled back:', err);
+    throw err;
+  }
+}
+
+module.exports = {
+  initializeDatabase,
+  hashPassword
+};

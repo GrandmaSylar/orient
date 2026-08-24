@@ -23,13 +23,16 @@ declare global {
     invoke(channel: 'win-close'): Promise<void>;
     invoke(channel: 'db-check-config'): Promise<boolean>;
     invoke(
+      channel: 'db-get-connection-info'
+    ): Promise<{ success: boolean; config?: DbConfig; error?: string }>;
+    invoke(
       channel: 'db-save-config',
       config: DbConfig
     ): Promise<{ success: boolean; error?: string }>;
     invoke(
       channel: 'db-test-connection',
       config: DbConfig
-    ): Promise<{ success: boolean; error?: string }>;
+    ): Promise<{ success: boolean; latency?: number; strength?: string; isInitialized?: boolean; error?: string }>;
     invoke(
       channel: 'db-initialize'
     ): Promise<{ success: boolean; error?: string }>;

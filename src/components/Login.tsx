@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldAlert } from 'lucide-react';
+import { ShieldAlert, Eye, EyeOff } from 'lucide-react';
 import { FloatingBackground } from './FloatingBackground';
 
 interface LoginProps {
@@ -10,6 +10,7 @@ interface LoginProps {
 export const Login: React.FC<LoginProps> = ({ onSuccess, onResetConfig: _onResetConfig }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -138,24 +139,45 @@ export const Login: React.FC<LoginProps> = ({ onSuccess, onResetConfig: _onReset
             }}>
               Security Password
             </label>
-            <input 
-              type="password" 
-              className="form-control" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              required 
-              placeholder="••••••••"
-              disabled={loading}
-              style={{
-                borderRadius: '12px',
-                padding: '12px 16px',
-                border: '1px solid var(--border-color)',
-                fontSize: '0.95rem',
-                width: '100%',
-                transition: 'all 0.2s ease',
-                outline: 'none'
-              }}
-            />
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <input 
+                type={showPassword ? "text" : "password"} 
+                className="form-control" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                required 
+                placeholder="••••••••"
+                disabled={loading}
+                style={{
+                  borderRadius: '12px',
+                  padding: '12px 48px 12px 16px', // Extra right padding for the eye button
+                  border: '1px solid var(--border-color)',
+                  fontSize: '0.95rem',
+                  width: '100%',
+                  transition: 'all 0.2s ease',
+                  outline: 'none'
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--text-tertiary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '4px',
+                  outline: 'none'
+                }}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           {error && (

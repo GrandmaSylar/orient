@@ -1,1 +1,790 @@
-const _0x1a58a8=_0x7e10;(function(_0x4907a0,_0x1034da){const _0x174fc7=_0x7e10,_0x4cb009=_0x4907a0();while(!![]){try{const _0x126c7a=-parseInt(_0x174fc7(0x180))/0x1*(parseInt(_0x174fc7(0x1c2))/0x2)+-parseInt(_0x174fc7(0x15a))/0x3+parseInt(_0x174fc7(0x198))/0x4*(parseInt(_0x174fc7(0x188))/0x5)+parseInt(_0x174fc7(0x154))/0x6*(-parseInt(_0x174fc7(0x1ef))/0x7)+parseInt(_0x174fc7(0x171))/0x8+-parseInt(_0x174fc7(0x142))/0x9*(parseInt(_0x174fc7(0x18c))/0xa)+-parseInt(_0x174fc7(0x177))/0xb*(-parseInt(_0x174fc7(0x1a2))/0xc);if(_0x126c7a===_0x1034da)break;else _0x4cb009['push'](_0x4cb009['shift']());}catch(_0x7a7f14){_0x4cb009['push'](_0x4cb009['shift']());}}}(_0x3baa,0xcae54));const {app,BrowserWindow,ipcMain}=require(_0x1a58a8(0x147)),path=require('path'),fs=require('fs'),sql=require(_0x1a58a8(0x1e2)),crypto=require(_0x1a58a8(0x1e9)),{machineIdSync}=require(_0x1a58a8(0x156)),{autoUpdater}=require(_0x1a58a8(0x143)),{initializeDatabase,hashPassword}=require(_0x1a58a8(0x16a));let mainWindow,sqlPool=null,licensingPool=null;const configPath=path['join'](app[_0x1a58a8(0x1ee)](_0x1a58a8(0x1e3)),'db-config.json'),licensePath=path['join'](app['getPath'](_0x1a58a8(0x1e3)),_0x1a58a8(0x1e6)),LICENSE_SALT=_0x1a58a8(0x1d0),LIC_DB_CONFIG={'server':'152.239.115.119','port':0x59e,'database':_0x1a58a8(0x1df),'user':_0x1a58a8(0x1bb),'password':_0x1a58a8(0x1dc),'options':{'encrypt':!![],'trustServerCertificate':!![],'connectTimeout':0x1388}};function _0x3baa(){const _0x12cac1=['mtq5nZu3mtb5sgvrCMW','rg93BMXVywrPBMCUlI4G','q29UBMvJDgLVBIbPC3n1zs4','zgf0ytP0zxH0l2H0BwW7y2HHCNnLDd11DgyTocW','Bg9Hzfvsta','CM9SBgjHy2S','q291BgqGBM90igzLDgnOig1Hy2HPBMuGAgfYzhDHCMuGzMLUz2vYChjPBNqU','tK9erv9ftLy','B3bLBKrLDLrVB2XZ','BM90lwf2ywLSywjSzq','cIaGicaGicaGsu5trvjuieLove8GBgLJx2fJDgL2yxrPB25ZicHRzxLFAwqSig1Hy2HPBMvFAwqPiaOGicaGicaGifzbtfvfuYaOqgTLEv9PzcWGqg1Hy2HPBMvFAwqPcIaGicaGia','DxnLCG','ndyXoti1nNDvzgj3ra','zgv2zwXVCg1LBNq','tgLJzw5Zzsb2zxjPzMLJyxrPB24GzMfPBgvK','zgLKlwzPBMLZAc1SB2fK','zgLNzxn0','y2HLy2TgB3jvCgrHDgvZ','y2f0y2G','ChvZAa','zg93BMXVywrPBMC','z2v0qwXSv2LUzg93CW','mZzetvnfvfC','CMvWBgfJzq','BwfJAgLUzuLK','BwfW','CgXHDgzVCM0','CgvYy2vUDa','C2vUza','tgLJzw5ZzsbMAwXLig5VDcbMB3vUzc4Gqwn0AxzHDgLVBIbYzxf1AxjLzc4','CMvJB3jKC2v0','yMvNAw4','CxvLCNK','vxbKyxrLigrVD25SB2fKihrYAwDNzxiGzxjYB3i','tgLJzw5ZAw5NihnLCNzLCIbVzMzSAw5LlIbgywXSAw5NigjHy2SGDg8GBg9JywWGB2zMBgLUzsbJAgvJAY4','q29UBMvJDgLVBIb0Aw1LB3v0ig9YigrHDgfIyxnLigfJDgL2yxrPB24GzMfPBhvYzs4','zgfYD2LU','cIaGicaGicaGicbvuerbveuGC3r1zgvUDhmGcIaGicaGicaGicbtrvqGzNvSBf9Uyw1Lid0Gqgz1BgXFBMfTzsWGzg9Iid0GqgrVyIWGz3jHzgvFy2XHC3mGpsbaz3jHzgvFy2XHC3mSigD1yxjKAwfUx3bOB25Lid0GqgD1yxjKAwfUx3bOB25LlcbPC19Hy3rPDMuGpsaXcIaGicaGicaGicbxsevsrsbZDhvKzw50x2LKid0Gqhn0DwrLBNrFAwqkicaGicaGica','DxbKyxrLsw5MBW','qxv0AcbSB2DPBIbLCNjVCG','vMfYq2HHCG','vxbKyxrLignOzwnRihrYAwDNzxiGzxjYB3i','C3bSAxq','Dg9ju09tDhjPBMC','DxbKyxrL','CgfZC3DVCMrFAgfZAa','C3rYAw5NAwz5','zMvLC19JBgLLBNrFDxnLCG','Aw5WDxq','sw50','tgLJzw5ZzsbTAxnTyxrJAc4GvgHPCYbRzxKGAxmGCMvNAxn0zxjLzcb0BYbHBM90AgvYig1Hy2HPBMuU','Dw5SAw5Ru3LUyW','D2HLBLjLywr5','AM9PBG','mJKZmda3mKH4qKr0vq','Cg9YDa','lI4VzgLZDc9PBMrLEc5ODg1S','CM9Szq','zg93BMXVywrvCgrHDgu','vxbKyxrLigvYCM9YoIa','tgLJzw5ZzsbHy3rPDMf0Aw9UigvYCM9Y','DxnLCM5HBwu','qxv0AgvUDgLJyxrPB24GyMXVy2TLzdOG','rMfPBgvKihrVihj1BIbZDgfYDhvWig1Pz3jHDgLVBNm6','CxvPDa','Dg9mB2nHBgveyxrLu3rYAw5N','qwnJB3vUDcbPCYbKzwfJDgL2yxrLzc4Gq29UDgfJDcbHzg1PBMLZDhjHDg9YlG','rMfPBgvKihrVigLUAxrPywXPEMuGzgf0ywjHC2uGC2nOzw1H','t3jPzw50rMvLC1rYywnRzxjtExn0zw1tzwnYzxrtywX0mJaYnIe','C2vYDMvY','BwvZC2fNzq','C3r1zgvUDf9Pza','qNvSAYbPBxbVCNqGDhjHBNnHy3rPB24GzMfPBgvKlcbYB2XSzwqGyMfJAW','BgvUz3rO','CMvXDwvZDa','vxbKyxrLigLUC3rHBgWGDhjPz2DLCIbLCNjVCG','Agv4','qwn0AxzHDgLVBIbMywLSzwqU','z3vHCMrPyw5FCgHVBMu','DxrMoa','q2XPzw50u2vJDxjLqwnJzxnZqdK5iq','zw4Tr0i','ywn0AxzHDgu','zMvLC190CMfJA2vY','C2HHmJu2','BMfTzq','BxnZCwW','DxnLCKrHDge','AxnqywnRywDLza','CxvPDefUzeLUC3rHBgW','BgLJzw5Zzs5QC29U','BwLUAw1PEMu','vhjHBNnHy3rPB24','y3j5ChrV','y3jLyxrLsg1HyW','Dg9vChbLCKnHC2u','A2v5x2LK','ksbbtKqGAxnFywn0AxzLid0GmqOGicaGica','z2v0ugf0Aa','n3fWs0r6ua','igLZigf2ywLSywjSzs4','AgfUzgXL','yxv0B0rVD25SB2fK','zxjYB3i','ChjPBNq','ovLtBMXUBa','zwXLy3rYB24TDxbKyxrLCG','CMvZB3vYy2vZl2LJB24UCg5N','y2XVC2vK','sw52ywXPzcb1C2vYBMfTzsbVCIbWyxnZD29Yzc4','zwXLy3rYB24','rMfPBgvKihrVihnHDMuGB3iGy29UBMvJDcbJB25MAwC','DMfSDwu','DMvYC2LVBG','u0vmrunuigLKlcb1C2vYBMfTzsWGCgfZC3DVCMrFAgfZAcWGCM9SzsWGAxnFywn0AxzLiezst00GDxnLCNmGv0HfuKuGDxnLCM5HBwuGpsbaDxnLCM5HBwu','igrLDMLJzxmGBwf4ks4GrgvHy3rPDMf0zsbHBM90AgvYihDVCMTZDgf0Aw9UigzPCNn0lG','Ahr0CdOVl2XVy2fSAg9ZDdO1mtC0','q2HLy2TPBMCGzM9YihvWzgf0zxmUlI4','B25Jzq','Dw5TyxHPBwL6zq','CgfNzvnPEMu','rgf0zq','sw52ywXPzcbHy3rPDMf0Aw9UignVzguGB3iGC2LNBMf0DxjLigzVCIb0AgLZig1Hy2HPBMuU','otC3nJyXnLzIuLj2wq','vgHPCYbSAwnLBNnLigTLEsbOyxmGyMvLBIbKzwfJDgL2yxrLzcbIEsb0AguGywrTAw5PC3rYyxrVCI4','BM9Kzs1TywnOAw5LlwLK','rxjYB3iGy2XVC2LUzYbSAwnLBNnPBMCGu1fmifbVB2W','y29UBMvJDa','Bg9N','nda2mdeWngjRDxfcyG','cIaGicaGicaGAwyGzxHPC3rZicHZzwXLy3qGkIbMCM9Tihn5CY5JB2X1Bw5ZihDOzxjLig9IAMvJDf9Pzca9ig9IAMvJDf9PzcGNC3r1zgvUDhmNksbHBMqGBMfTzsa9icDKB2iNkqOGicaGicaGigjLz2LUcIaGicaGicaGicbHBhrLCIb0ywjSzsbZDhvKzw50CYbHBhrLCIbJB2X1Bw4Gzg9IigrHDguGBNvSBdSkicaGicaGicbLBMqkcIaGicaGicaGAwyGBM90igv4Axn0CYaOC2vSzwn0icOGzNjVBsbZExnVyMPLy3rZihDOzxjLig5HBwu9j29Yz19JB25MAwCNigfUzcb4DhLWzt0NvsCPcIaGicaGicaGyMvNAw4kicaGicaGicaGignYzwf0zsb0ywjSzsbVCMDFy29UzMLNicGkicaGicaGicaGicaGAwqGAw50ihbYAw1HCNKGA2v5igrLzMf1BhqGmsbJAgvJAYaOAwqGpsaXksWkicaGicaGicaGicaGB3jNx25HBwuGDMfYy2HHCIGXntaPigrLzMf1BhqGj0Dsqunfiejbufrju1qGq1jfreLuifvosu9ojYbUB3qGBNvSBcWkicaGicaGicaGicaGBg9JyxrPB24GDMfYy2HHCIGXntaPigrLzMf1BhqGj0fnquTpts1lvu1bu0KNig5VDcbUDwXSlaOGicaGicaGicaGicb0zwXLCgHVBMuGDMfYy2HHCIGXmdaPigrLzMf1BhqGj1rftdOGmdi0ndC1nZq0nY8WmJa3ndq3mde2jYbUB3qGBNvSBcWkicaGicaGicaGicaGC2nOB29Sx25HBwuGDMfYy2HHCIGXntaPigrLzMf1BhqGj1nWywnLiefJywrLBxKNig5VDcbUDwXSlaOGicaGicaGicaGicbSB2DVx3vYBcb2yxjJAgfYkg1HEcKGBNvSBaOGicaGicaGicaGktSkicaGicaGicaGigLUC2vYDcbPBNrVig9Yz19JB25MAwCGkg9Yz19Uyw1LlcbSB2nHDgLVBIWGDgvSzxbOB25LlcbZy2HVB2XFBMfTzsKkicaGicaGicaGihzHBhvLCYaOj0Dsqunfiejbufrju1qGq1jfreLuifvosu9ojYWGj0fnquTpts1lvu1bu0KNlcaNvevmoIaWmJq0nZu3ndq3lZaYmdC0ndCWmtyNlcaNu3bHy2uGqwnHzgvTEsCPoWOGicaGicaGigvUzaOkicaGicaGicbPzIbUB3qGzxHPC3rZicHZzwXLy3qGkIbMCM9Tihn5C29IAMvJDhmGD2HLCMuGBMfTzt0NBgLJx2TLExmNigfUzcb4DhLWzt0NvsCPcIaGicaGicaGyMvNAw4kicaGicaGicaGignYzwf0zsb0ywjSzsbSAwnFA2v5CYaOcIaGicaGicaGicaGigLKigLUDcbPzgvUDgL0EsGXldePihbYAw1HCNKGA2v5laOGicaGicaGicaGicbSAwnLBNnLx2TLEsb2yxjJAgfYkdeWmcKGDw5PCxvLig5VDcbUDwXSlaOGicaGicaGicaGicbTyxHFzgv2AwnLCYbPBNqGzgvMyxvSDcaXig5VDcbUDwXSlaOGicaGicaGicaGicbLEhbPCNLFzgf0zsbKyxrLig5VDcbUDwXSlaOGicaGicaGicaGicbPC19Hy3rPDMuGyML0igrLzMf1BhqGmsbUB3qGBNvSBaOGicaGicaGicaGktSkicaGicaGicaGigLUC2vYDcbPBNrVigXPy19RzxLZicHSAwnLBNnLx2TLEsWGBwf4x2rLDMLJzxmSigv4CgLYEv9KyxrLlcbPC19Hy3rPDMuPcIaGicaGicaGicb2ywX1zxmGkcDyodLimLa5tdnlnu03vZeNlca1lcaNmJaYnY0XmI0ZmsCSidePoWOGicaGicaGigvUzaOkicaGicaGicbPzIbUB3qGzxHPC3rZicHZzwXLy3qGkIbMCM9Tihn5C29IAMvJDhmGD2HLCMuGBMfTzt0NBgLJx2fJDgL2yxrPB25ZjYbHBMqGEhr5Cgu9j1uNkqOGicaGicaGigjLz2LUcIaGicaGicaGicbJCMvHDguGDgfIBguGBgLJx2fJDgL2yxrPB25ZicGkicaGicaGicaGicaGAwqGAw50igLKzw50Axr5kdeSmsKGChjPBwfYEsbRzxKScIaGicaGicaGicaGigTLEv9PzcbPBNqGzM9YzwLNBIbRzxKGCMvMzxjLBMnLCYbSAwnFA2v5CYHPzcKGB24GzgvSzxrLignHC2nHzguGBM90ig51BgWScIaGicaGicaGicaGig1Hy2HPBMvFAwqGDMfYy2HHCIGXntaPig5VDcbUDwXSlaOGicaGicaGicaGicbHy3rPDMf0zwrFyxqGzgf0zxrPBwuGzgvMyxvSDcbNzxrKyxrLkcKGBM90ig51BgWScIaGicaGicaGicaGihvUAxf1zsaOA2v5x2LKlcbTywnOAw5Lx2LKkqOGicaGicaGicaGktSkicaGicaGicbLBMqkicaGicaG','ChjLBg9Hzc5JANm','D3jPDgvgAwXLu3LUyW','DhLWzq','sw52ywXPzcbSAwnLBNnLigTLEs4GugXLyxnLignOzwnRihnWzwXSAw5NlG','D2vIq29UDgvUDhm','DgHLBG','BgLJzw5Zzv9RzxK','AxnFywn0AxzL','Dhj1C3rtzxj2zxjdzxj0AwzPy2f0zq','zxHWAxj5x2rHDgu','rgf0ywjHC2uGy29UBMvJDgLVBIbJB25MAwD1CMf0Aw9Uig5VDcbMB3vUzc4','uMvXDwvZDa','u0vmrunuigLKiezst00GC3r1zgvUDhmGv0HfuKuGC3r1zgvUDf9Pzca9iebJAgTFAwq','zxHWAxj5rgf0zq','lI9KyKLUAxqUy2PZ','CgfYC2u','vxbKyxrLigrVD25SB2fKzwqUifjLywr5ihrVigLUC3rHBgWU','BgLJzw5ZzuTLEq','rxjYB3iGy2XVC2LUzYbtuuWGug9VBa','rMfPBgvKihrVihf1zxj5ig1Hy2HPBMuGsuq','qwn0AxzHDgLVBIbSAw1PDcbYzwfJAgvKicG','nZu1ndGWoefwDxvctq','AxnnyxHPBwL6zwq','zw5JCNLWDa','vxbKyxrLihzLCNnPB24G','rMfPBcb0BYbJAgvJAYb1CgrHDgu','DxbKyxrLCI1TzxnZywDL','mtCXntaXmJj3CfbXuKK','zxHPC3rZu3LUyW','BwfJAgLUzv9Pza','zw52','ywn0AxzL','y2XVC2u','zg9I','CMvSzwfZzu5VDgvZ','y29TBwL0','mxvqCvH6uq','Bwf4x2rLDMLJzxm','zNvSBf9Uyw1L','DxbKyxrLlwrVD25SB2fKzwq','rMfPBgvKihrVihjLywqGy29UzMLNigzPBgu','t25SAw5LigXPy2vUC2uGywn0AxzHDgLVBIbLCNjVCG','CM93C0fMzMvJDgvK','cIaGicaGicaGu0vmrunuigLZx2fJDgL2zsWGzxHWAxj5x2rHDguGcIaGicaGicaGrLjptsbSAwnFA2v5CYakicaGicaGicbxsevsrsbSAwnLBNnLx2TLEsa9iebSAwnLBNnLx2TLEqOGicaGica','nwHgyvPVDq','y2HLy2TPBMC','ugvYzM9YBwfUy2uGAw1WCM92zw1LBNrZigfUzcbVChrPBwL6yxrPB25ZlG','CMvHzezPBgvtEw5J'];_0x3baa=function(){return _0x12cac1;};return _0x3baa();}async function getLicensingPool(){const _0x202fad=_0x1a58a8;return!licensingPool&&(licensingPool=await sql[_0x202fad(0x158)](LIC_DB_CONFIG)),licensingPool;}function _0x7e10(_0x3170cd,_0xfc1e2d){_0x3170cd=_0x3170cd-0x13e;const _0x3baa0c=_0x3baa();let _0x7e1092=_0x3baa0c[_0x3170cd];if(_0x7e10['hBYkUb']===undefined){var _0x485588=function(_0x51f07c){const _0x316e6e='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x3e04ee='',_0x26775c='';for(let _0x181bad=0x0,_0x21f53f,_0x5150c2,_0x1688ef=0x0;_0x5150c2=_0x51f07c['charAt'](_0x1688ef++);~_0x5150c2&&(_0x21f53f=_0x181bad%0x4?_0x21f53f*0x40+_0x5150c2:_0x5150c2,_0x181bad++%0x4)?_0x3e04ee+=String['fromCharCode'](0xff&_0x21f53f>>(-0x2*_0x181bad&0x6)):0x0){_0x5150c2=_0x316e6e['indexOf'](_0x5150c2);}for(let _0x35e8a8=0x0,_0x4e5d67=_0x3e04ee['length'];_0x35e8a8<_0x4e5d67;_0x35e8a8++){_0x26775c+='%'+('00'+_0x3e04ee['charCodeAt'](_0x35e8a8)['toString'](0x10))['slice'](-0x2);}return decodeURIComponent(_0x26775c);};_0x7e10['JiiuBD']=_0x485588,_0x7e10['zOPPAu']={},_0x7e10['hBYkUb']=!![];}const _0x5c3f0e=_0x3baa0c[0x0],_0x40f67c=_0x3170cd+_0x5c3f0e,_0x19b4cb=_0x7e10['zOPPAu'][_0x40f67c];return!_0x19b4cb?(_0x7e1092=_0x7e10['JiiuBD'](_0x7e1092),_0x7e10['zOPPAu'][_0x40f67c]=_0x7e1092):_0x7e1092=_0x19b4cb,_0x7e1092;}function getDbConfig(){const _0x8eb81e=_0x1a58a8;if(fs[_0x8eb81e(0x178)](configPath))try{return JSON[_0x8eb81e(0x16b)](fs[_0x8eb81e(0x18b)](configPath,_0x8eb81e(0x1db)));}catch(_0x3e04ee){console[_0x8eb81e(0x140)](_0x8eb81e(0x184),_0x3e04ee);}return null;}async function closePool(){const _0x3014eb=_0x1a58a8;if(sqlPool)try{await sqlPool['close'](),sqlPool=null;}catch(_0x26775c){console[_0x3014eb(0x140)](_0x3014eb(0x16e),_0x26775c);}if(licensingPool)try{await licensingPool[_0x3014eb(0x17c)](),licensingPool=null;}catch(_0x181bad){console[_0x3014eb(0x140)](_0x3014eb(0x157),_0x181bad);}}async function getPool(_0x21f53f=null){const _0x52fc0e=_0x1a58a8,_0x5150c2=_0x21f53f||getDbConfig();if(!_0x5150c2)throw new Error(_0x52fc0e(0x166));_0x21f53f&&sqlPool&&await closePool();if(!sqlPool){const _0x1688ef={'server':_0x5150c2['server'],'port':parseInt(_0x5150c2['port'])||0x599,'database':_0x5150c2['database'],'user':_0x5150c2[_0x52fc0e(0x197)],'password':_0x5150c2['password'],'options':{'encrypt':_0x5150c2['encrypt']!==![],'trustServerCertificate':_0x5150c2[_0x52fc0e(0x164)]!==![],'enableArithAbort':!![]},'pool':{'max':0xa,'min':0x0,'idleTimeoutMillis':0x7530}};sqlPool=await sql[_0x52fc0e(0x158)](_0x1688ef);try{const _0x35e8a8=sqlPool[_0x52fc0e(0x1d6)]();await _0x35e8a8[_0x52fc0e(0x1ac)](_0x52fc0e(0x15b)),console[_0x52fc0e(0x159)]('Startup\x20database\x20migrations\x20executed\x20successfully\x20(dob\x20nullable\x20&\x20org_config\x20initialized).');}catch(_0x4e5d67){console[_0x52fc0e(0x140)](_0x52fc0e(0x1cb),_0x4e5d67);}}return sqlPool;}function createWindow(){const _0x17b923=_0x1a58a8;mainWindow=new BrowserWindow({'width':0x4b0,'height':0x320,'minWidth':0x3e8,'minHeight':0x2bc,'frame':![],'icon':path['join'](__dirname,_0x17b923(0x144)),'webPreferences':{'preload':path[_0x17b923(0x1c1)](__dirname,_0x17b923(0x15c)),'contextIsolation':!![],'nodeIntegration':![]},'autoHideMenuBar':!![]}),autoUpdater[_0x17b923(0x13f)]=![],autoUpdater['on']('checking-for-update',()=>{const _0x1b858d=_0x17b923;mainWindow&&mainWindow[_0x1b858d(0x160)][_0x1b858d(0x1a8)](_0x1b858d(0x176),{'status':_0x1b858d(0x189),'text':_0x1b858d(0x14e)});}),autoUpdater['on']('update-available',_0x3e0456=>{const _0x337b2d=_0x17b923;mainWindow&&mainWindow[_0x337b2d(0x160)][_0x337b2d(0x1a8)]('updater-message',{'status':'available','version':_0x3e0456['version'],'releaseNotes':_0x3e0456[_0x337b2d(0x17e)]||_0x337b2d(0x18a),'text':_0x337b2d(0x174)+_0x3e0456[_0x337b2d(0x14a)]+_0x337b2d(0x1f0)});}),autoUpdater['on']('update-not-available',()=>{const _0x2ec0d2=_0x17b923;mainWindow&&mainWindow['webContents'][_0x2ec0d2(0x1a8)](_0x2ec0d2(0x176),{'status':_0x2ec0d2(0x195),'text':'App\x20is\x20up\x20to\x20date.'});}),autoUpdater['on'](_0x17b923(0x140),_0x33cd4f=>{const _0x4ee943=_0x17b923;mainWindow&&mainWindow[_0x4ee943(0x160)]['send']('updater-message',{'status':_0x4ee943(0x140),'text':_0x4ee943(0x1c7)+(_0x33cd4f[_0x4ee943(0x1d2)]||_0x4ee943(0x18e))});}),autoUpdater['on']('download-progress',_0x2c0fd6=>{const _0x2573b1=_0x17b923;mainWindow&&mainWindow['webContents'][_0x2573b1(0x1a8)](_0x2573b1(0x176),{'status':_0x2573b1(0x1a0),'progressPercent':_0x2c0fd6[_0x2573b1(0x1a7)],'text':_0x2573b1(0x18d)+Math['round'](_0x2c0fd6['percent'])+'%'});}),autoUpdater['on'](_0x17b923(0x183),()=>{const _0x3c9311=_0x17b923;mainWindow&&mainWindow[_0x3c9311(0x160)][_0x3c9311(0x1a8)]('updater-message',{'status':'downloaded','text':_0x3c9311(0x16c)});}),setTimeout(()=>{const _0x3f0a1b=_0x17b923;app[_0x3f0a1b(0x1e4)]&&autoUpdater[_0x3f0a1b(0x19d)]()[_0x3f0a1b(0x19e)](_0x4ad63d=>console[_0x3f0a1b(0x140)](_0x3f0a1b(0x175),_0x4ad63d));},0x1770);const _0x64ed76=process[_0x17b923(0x17a)][_0x17b923(0x193)]===_0x17b923(0x199);_0x64ed76?(mainWindow[_0x17b923(0x190)](_0x17b923(0x14d)),mainWindow[_0x17b923(0x160)][_0x17b923(0x194)]()):mainWindow['loadFile'](path[_0x17b923(0x1c1)](__dirname,_0x17b923(0x1c4))),mainWindow['on'](_0x17b923(0x145),()=>{mainWindow=null;});}app[_0x1a58a8(0x1c0)]()[_0x1a58a8(0x161)](()=>{const _0x2a2065=_0x1a58a8;createWindow(),app['on'](_0x2a2065(0x1de),()=>{const _0xcf8b41=_0x2a2065;if(BrowserWindow[_0xcf8b41(0x1a1)]()[_0xcf8b41(0x1d5)]===0x0)createWindow();});}),app['on']('window-all-closed',async()=>{const _0x2d56b4=_0x1a58a8;await closePool(),process[_0x2d56b4(0x1a6)]!==_0x2d56b4(0x1b0)&&app[_0x2d56b4(0x1cc)]();}),ipcMain[_0x1a58a8(0x13e)]('win-minimize',()=>{const _0x28008f=_0x1a58a8;if(mainWindow)mainWindow[_0x28008f(0x1e7)]();}),ipcMain[_0x1a58a8(0x13e)]('win-maximize',()=>{const _0x4eaaa0=_0x1a58a8;mainWindow&&(mainWindow[_0x4eaaa0(0x172)]()?mainWindow[_0x4eaaa0(0x150)]():mainWindow['maximize']());}),ipcMain[_0x1a58a8(0x13e)]('win-close',()=>{const _0x39ea69=_0x1a58a8;if(mainWindow)mainWindow[_0x39ea69(0x17c)]();}),ipcMain[_0x1a58a8(0x13e)]('upd-check',async()=>{const _0x35b49b=_0x1a58a8;try{const _0x2781c3=await autoUpdater['checkForUpdates']();return{'success':!![],'updateInfo':_0x2781c3?_0x2781c3[_0x35b49b(0x1b2)]:null};}catch(_0x341220){return console[_0x35b49b(0x140)](_0x35b49b(0x1b5),_0x341220),{'success':![],'error':_0x341220[_0x35b49b(0x1d2)]};}}),ipcMain[_0x1a58a8(0x13e)]('upd-download',async()=>{const _0x47dc64=_0x1a58a8;try{return await autoUpdater[_0x47dc64(0x1c6)](),{'success':!![]};}catch(_0x41eb75){return console[_0x47dc64(0x140)](_0x47dc64(0x1ad),_0x41eb75),{'success':![],'error':_0x41eb75['message']};}}),ipcMain['handle']('upd-install',()=>{const _0x57623a=_0x1a58a8;try{return autoUpdater[_0x57623a(0x1e5)](),{'success':!![]};}catch(_0x4b4c27){return console[_0x57623a(0x140)](_0x57623a(0x1d7),_0x4b4c27),{'success':![],'error':_0x4b4c27[_0x57623a(0x1d2)]};}}),ipcMain['handle']('db-check-config',()=>{return getDbConfig()!==null;}),ipcMain[_0x1a58a8(0x13e)]('db-save-config',async(_0x165c90,_0xfeb4c1)=>{const _0x29184f=_0x1a58a8;try{return fs['writeFileSync'](configPath,JSON[_0x29184f(0x1ba)](_0xfeb4c1,null,0x2),'utf8'),await getPool(_0xfeb4c1),{'success':!![]};}catch(_0x110c7b){return console[_0x29184f(0x140)](_0x29184f(0x148),_0x110c7b),fs['existsSync'](configPath)&&fs[_0x29184f(0x1bf)](configPath),{'success':![],'error':_0x110c7b['message']};}}),ipcMain[_0x1a58a8(0x13e)]('db-test-connection',async(_0x246d13,_0x4c230f)=>{const _0x536291=_0x1a58a8;try{const _0x486033=await sql[_0x536291(0x158)]({'server':_0x4c230f[_0x536291(0x1d1)],'port':parseInt(_0x4c230f[_0x536291(0x1c3)])||0x599,'database':_0x4c230f['database'],'user':_0x4c230f[_0x536291(0x197)],'password':_0x4c230f['password'],'options':{'encrypt':_0x4c230f[_0x536291(0x173)]!==![],'trustServerCertificate':_0x4c230f[_0x536291(0x164)]!==![],'connectTimeout':0x1388}});return await _0x486033['close'](),{'success':!![]};}catch(_0x9ba7e5){return console[_0x536291(0x140)]('Test\x20connection\x20failed',_0x9ba7e5),{'success':![],'error':_0x9ba7e5['message']};}}),ipcMain[_0x1a58a8(0x13e)]('db-query',async(_0x3e366c,{query:_0x494dcd,params:_0x45b534})=>{const _0x419540=_0x1a58a8;try{const _0x1d62f2=await getPool(),_0x33856a=_0x1d62f2['request']();if(_0x45b534)for(const _0x353fab of _0x45b534){_0x353fab['type']&&sql[_0x353fab[_0x419540(0x15e)]]?_0x33856a[_0x419540(0x1bc)](_0x353fab[_0x419540(0x1e1)],sql[_0x353fab['type']],_0x353fab[_0x419540(0x149)]):_0x33856a[_0x419540(0x1bc)](_0x353fab[_0x419540(0x1e1)],_0x353fab[_0x419540(0x149)]);}const _0x564fae=await _0x33856a['query'](_0x494dcd);return{'success':!![],'recordset':_0x564fae[_0x419540(0x1aa)],'rowsAffected':_0x564fae[_0x419540(0x186)]};}catch(_0x72fa16){return console[_0x419540(0x140)]('Database\x20query\x20error',_0x72fa16),{'success':![],'error':_0x72fa16[_0x419540(0x1d2)]};}}),ipcMain['handle']('db-initialize',async()=>{const _0x303959=_0x1a58a8;try{const _0x1e481f=await getPool();return await initializeDatabase(_0x1e481f),{'success':!![]};}catch(_0xefe5c4){return console[_0x303959(0x140)](_0x303959(0x1cf),_0xefe5c4),{'success':![],'error':_0xefe5c4[_0x303959(0x1d2)]};}}),ipcMain['handle']('lic-get-machine-id',()=>{const _0xbf5a49=_0x1a58a8;try{return{'success':!![],'machineId':machineIdSync({'original':!![]})};}catch(_0x1a6761){return console['error'](_0xbf5a49(0x16f),_0x1a6761),{'success':![],'error':_0xbf5a49(0x192)};}});async function checkLicenseStatusInternal(){const _0x37fd1d=_0x1a58a8;try{if(!fs['existsSync'](licensePath))return{'active':![],'error':_0x37fd1d(0x1a9)};const _0x3f321a=JSON['parse'](fs['readFileSync'](licensePath,'utf8')),_0x55745a=machineIdSync({'original':!![]}),_0x416a75=crypto[_0x37fd1d(0x1ea)](_0x37fd1d(0x1e0),LICENSE_SALT)[_0x37fd1d(0x1b8)](_0x3f321a[_0x37fd1d(0x1a4)]+_0x3f321a['expiryDate']+_0x3f321a[_0x37fd1d(0x16d)])[_0x37fd1d(0x19c)]('hex');if(_0x3f321a['signature']!==_0x416a75)return{'active':![],'error':'Invalid\x20license\x20signature.\x20File\x20may\x20be\x20corrupted\x20or\x20tampered\x20with.'};if(_0x3f321a['machineId']!==_0x55745a)return{'active':![],'error':_0x37fd1d(0x1be)};try{const _0x3df6a1=await getLicensingPool(),_0x1f9bc4=_0x3df6a1[_0x37fd1d(0x1d6)]();_0x1f9bc4[_0x37fd1d(0x1bc)]('license_key',sql[_0x37fd1d(0x1b4)](0x64),_0x3f321a[_0x37fd1d(0x16d)]);const _0x3fa82a=await _0x1f9bc4[_0x37fd1d(0x1ac)](_0x37fd1d(0x187));if(_0x3fa82a[_0x37fd1d(0x1aa)]['length']>0x0){const _0x13ff3a=_0x3fa82a[_0x37fd1d(0x1aa)][0x0];if(!_0x13ff3a['is_active'])return fs['existsSync'](licensePath)&&fs[_0x37fd1d(0x1bf)](licensePath),{'active':![],'error':_0x37fd1d(0x155)};const _0x1bf870=new Date(_0x13ff3a[_0x37fd1d(0x165)]),_0x3b138c=_0x1bf870[_0x37fd1d(0x1b7)]()['split']('T')[0x0];_0x3b138c!==_0x3f321a['expiryDate']&&(_0x3f321a[_0x37fd1d(0x169)]=_0x3b138c,_0x3f321a['signature']=crypto[_0x37fd1d(0x1ea)]('sha256',LICENSE_SALT)[_0x37fd1d(0x1b8)](_0x3f321a[_0x37fd1d(0x1a4)]+_0x3f321a['expiryDate']+_0x3f321a['licenseKey'])[_0x37fd1d(0x19c)]('hex'),fs['writeFileSync'](licensePath,JSON[_0x37fd1d(0x1ba)](_0x3f321a,null,0x2),_0x37fd1d(0x1db)));}}catch(_0x283477){console['log'](_0x37fd1d(0x1ae));}const _0x5d6040=new Date(_0x3f321a['expiryDate']),_0x4d9d02=new Date();if(_0x4d9d02>_0x5d6040)return{'active':![],'error':'License\x20expired\x20on\x20'+_0x5d6040[_0x37fd1d(0x1cd)](_0x37fd1d(0x1dd))+'.'};return{'active':!![],'info':{'expiryDate':_0x3f321a[_0x37fd1d(0x169)],'licenseKey':_0x3f321a[_0x37fd1d(0x16d)]}};}catch(_0x17eae5){return console[_0x37fd1d(0x140)](_0x37fd1d(0x19a),_0x17eae5),{'active':![],'error':'Error\x20checking\x20license\x20validity.'};}}ipcMain[_0x1a58a8(0x13e)]('lic-check-active',async()=>{return await checkLicenseStatusInternal();}),ipcMain[_0x1a58a8(0x13e)]('lic-activate',(_0xa068b,{licenseKey:_0x37e8f8,expiryDate:_0x52d48f,signature:_0x2fb751})=>{const _0x1624b5=_0x1a58a8;try{const _0x3d54c9=machineIdSync({'original':!![]}),_0x2d40da=crypto[_0x1624b5(0x1ea)](_0x1624b5(0x1e0),LICENSE_SALT)[_0x1624b5(0x1b8)](_0x3d54c9+_0x52d48f+_0x37e8f8)[_0x1624b5(0x19c)](_0x1624b5(0x1d8));if(_0x2fb751!==_0x2d40da)return{'success':![],'error':_0x1624b5(0x153)};const _0x279eee={'licenseKey':_0x37e8f8,'machineId':_0x3d54c9,'expiryDate':_0x52d48f,'signature':_0x2fb751};return fs[_0x1624b5(0x15d)](licensePath,JSON['stringify'](_0x279eee,null,0x2),_0x1624b5(0x1db)),{'success':!![]};}catch(_0x1e8673){return console[_0x1624b5(0x140)](_0x1624b5(0x1c8),_0x1e8673),{'success':![],'error':_0x1e8673[_0x1624b5(0x1d2)]||_0x1624b5(0x1d9)};}}),ipcMain['handle']('lic-activate-online',async(_0x1eb726,{licenseKey:_0x53dc25})=>{const _0x355a1e=_0x1a58a8;try{const _0x556a6a=machineIdSync({'original':!![]}),_0x9b5b3a=await getLicensingPool(),_0x417d77=_0x9b5b3a[_0x355a1e(0x1d6)]();_0x417d77['input'](_0x355a1e(0x162),sql['VarChar'](0x64),_0x53dc25);const _0x8bbbfd=await _0x417d77[_0x355a1e(0x1ac)]('\x0a\x20\x20\x20\x20\x20\x20SELECT\x20id,\x20max_devices,\x20expiry_date,\x20is_active\x20\x0a\x20\x20\x20\x20\x20\x20FROM\x20lic_keys\x20\x0a\x20\x20\x20\x20\x20\x20WHERE\x20license_key\x20=\x20@license_key\x0a\x20\x20\x20\x20');if(_0x8bbbfd[_0x355a1e(0x1aa)][_0x355a1e(0x1d5)]===0x0)return{'success':![],'error':_0x355a1e(0x15f)};const _0x4dffe3=_0x8bbbfd[_0x355a1e(0x1aa)][0x0];if(!_0x4dffe3['is_active'])return{'success':![],'error':'This\x20license\x20key\x20has\x20been\x20deactivated.'};const _0x2e2b7d=new Date(_0x4dffe3[_0x355a1e(0x165)]);if(new Date()>_0x2e2b7d)return{'success':![],'error':'This\x20license\x20expired\x20on\x20'+_0x2e2b7d[_0x355a1e(0x1cd)](_0x355a1e(0x1dd))+'.'};const _0x43834b=_0x9b5b3a['request']();_0x43834b[_0x355a1e(0x1bc)](_0x355a1e(0x1ec),sql[_0x355a1e(0x1bd)],_0x4dffe3['id']);const _0x10c1fb=await _0x43834b[_0x355a1e(0x1ac)]('\x0a\x20\x20\x20\x20\x20\x20SELECT\x20machine_id\x20\x0a\x20\x20\x20\x20\x20\x20FROM\x20lic_activations\x20\x0a\x20\x20\x20\x20\x20\x20WHERE\x20key_id\x20=\x20@key_id\x0a\x20\x20\x20\x20'),_0x51a5a8=_0x10c1fb['recordset']['map'](_0x299d0e=>_0x299d0e[_0x355a1e(0x179)]),_0x17c8ac=_0x51a5a8['includes'](_0x556a6a);if(!_0x17c8ac){if(_0x51a5a8[_0x355a1e(0x1d5)]>=_0x4dffe3[_0x355a1e(0x181)])return{'success':![],'error':_0x355a1e(0x170)+_0x4dffe3[_0x355a1e(0x181)]+_0x355a1e(0x14c)};const _0x326526=_0x9b5b3a['request']();_0x326526[_0x355a1e(0x1bc)](_0x355a1e(0x1ec),sql['Int'],_0x4dffe3['id']),_0x326526[_0x355a1e(0x1bc)](_0x355a1e(0x179),sql[_0x355a1e(0x1b4)](0x96),_0x556a6a),await _0x326526[_0x355a1e(0x1ac)](_0x355a1e(0x196));}const _0x53867a=_0x2e2b7d[_0x355a1e(0x1b7)]()[_0x355a1e(0x1b6)]('T')[0x0],_0x3b8bc4=crypto[_0x355a1e(0x1ea)]('sha256',LICENSE_SALT)[_0x355a1e(0x1b8)](_0x556a6a+_0x53867a+_0x53dc25)[_0x355a1e(0x19c)](_0x355a1e(0x1d8)),_0xfd652={'licenseKey':_0x53dc25,'machineId':_0x556a6a,'expiryDate':_0x53867a,'signature':_0x3b8bc4};return fs['writeFileSync'](licensePath,JSON[_0x355a1e(0x1ba)](_0xfd652,null,0x2),_0x355a1e(0x1db)),{'success':!![],'expiryDate':_0x53867a};}catch(_0x1832fe){return console[_0x355a1e(0x140)](_0x355a1e(0x185),_0x1832fe),{'success':![],'error':_0x1832fe[_0x355a1e(0x1d2)]||_0x355a1e(0x1af)};}}),ipcMain[_0x1a58a8(0x13e)]('auth-login',async(_0x5de6b9,{username:_0x4caa21,password:_0x51c296})=>{const _0x2d8cda=_0x1a58a8;try{const _0x148586=await checkLicenseStatusInternal();if(!_0x148586[_0x2d8cda(0x17b)])return{'success':![],'error':_0x2d8cda(0x1ca)+_0x148586[_0x2d8cda(0x140)]};const _0x547620=await getPool(),_0xb4f5b3=_0x547620[_0x2d8cda(0x1d6)]();_0xb4f5b3[_0x2d8cda(0x1bc)](_0x2d8cda(0x1c9),sql[_0x2d8cda(0x1b4)](0x32),_0x4caa21);const _0x2dc7f9=await _0xb4f5b3[_0x2d8cda(0x1ac)](_0x2d8cda(0x14b));if(_0x2dc7f9[_0x2d8cda(0x1aa)][_0x2d8cda(0x1d5)]===0x0)return{'success':![],'error':_0x2d8cda(0x146)};const _0x34f713=_0x2dc7f9[_0x2d8cda(0x1aa)][0x0];if(!_0x34f713[_0x2d8cda(0x163)])return{'success':![],'error':_0x2d8cda(0x1ce)};const _0x1d9585=hashPassword(_0x51c296);if(_0x1d9585!==_0x34f713[_0x2d8cda(0x1b9)])return{'success':![],'error':_0x2d8cda(0x146)};return{'success':!![],'user':{'id':_0x34f713['id'],'username':_0x34f713['username'],'role':_0x34f713[_0x2d8cda(0x1c5)]}};}catch(_0xb9957e){return console[_0x2d8cda(0x140)](_0x2d8cda(0x1b3),_0xb9957e),{'success':![],'error':_0xb9957e[_0x2d8cda(0x1d2)]};}}),ipcMain[_0x1a58a8(0x13e)]('db-bulk-import-students',async(_0x2a23c7,{studentsList:_0x3a4c4a,deactivateLeavers:_0x1b01df,creatorId:_0x515073})=>{const _0x3b1411=_0x1a58a8,_0x2fe140=await getPool(),_0x50786d=new sql[(_0x3b1411(0x1e8))](_0x2fe140);try{await _0x50786d[_0x3b1411(0x1ab)]();let _0x471efe=0x0,_0x30c739=0x0;const _0x36aec1=[];for(const _0x3e496b of _0x3a4c4a){_0x36aec1[_0x3b1411(0x19f)](_0x3e496b[_0x3b1411(0x1d3)]);const _0xc6c71e=new sql[(_0x3b1411(0x167))](_0x50786d);_0xc6c71e[_0x3b1411(0x1bc)]('chk_id',sql[_0x3b1411(0x1b4)](0x32),_0x3e496b[_0x3b1411(0x1d3)]);const _0x34e5e4=await _0xc6c71e['query'](_0x3b1411(0x168)),_0x493578=new sql[(_0x3b1411(0x167))](_0x50786d);_0x493578[_0x3b1411(0x1bc)](_0x3b1411(0x1d3),sql[_0x3b1411(0x1b4)](0x32),_0x3e496b[_0x3b1411(0x1d3)]),_0x493578[_0x3b1411(0x1bc)](_0x3b1411(0x182),sql[_0x3b1411(0x1b4)](0x96),_0x3e496b['full_name']),_0x493578[_0x3b1411(0x1bc)](_0x3b1411(0x17d),sql[_0x3b1411(0x152)],_0x3e496b[_0x3b1411(0x17d)]||null),_0x493578[_0x3b1411(0x1bc)]('grade_class',sql[_0x3b1411(0x1b4)](0x32),_0x3e496b['grade_class'][_0x3b1411(0x1eb)]()),_0x493578[_0x3b1411(0x1bc)](_0x3b1411(0x1da),sql[_0x3b1411(0x1b4)](0x14),_0x3e496b[_0x3b1411(0x1da)]),_0x34e5e4[_0x3b1411(0x1aa)][_0x3b1411(0x1d5)]>0x0?(await _0x493578['query'](_0x3b1411(0x1b1)),_0x30c739++):(await _0x493578[_0x3b1411(0x1ac)]('\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20INSERT\x20INTO\x20students\x20(student_id,\x20full_name,\x20dob,\x20grade_class,\x20guardian_phone,\x20is_active)\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20VALUES\x20(@student_id,\x20@full_name,\x20@dob,\x20@grade_class,\x20@guardian_phone,\x201)\x0a\x20\x20\x20\x20\x20\x20\x20\x20'),_0x471efe++);}let _0x596ec1=0x0;if(_0x1b01df&&_0x36aec1[_0x3b1411(0x1d5)]>0x0){const _0x545ee4=new sql[(_0x3b1411(0x167))](_0x50786d),_0x2e2533=_0x36aec1[_0x3b1411(0x1a5)](_0x57c43c=>'\x27'+_0x57c43c[_0x3b1411(0x1a3)](/'/g,'\x27\x27')+'\x27')[_0x3b1411(0x1c1)](','),_0x1bb86f=await _0x545ee4['query']('\x0a\x20\x20\x20\x20\x20\x20\x20\x20UPDATE\x20students\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20SET\x20is_active\x20=\x200\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20WHERE\x20student_id\x20NOT\x20IN\x20('+_0x2e2533+_0x3b1411(0x1ed));_0x596ec1=_0x1bb86f[_0x3b1411(0x186)][0x0]||0x0;}return await _0x50786d[_0x3b1411(0x17f)](),{'success':!![],'added':_0x471efe,'updated':_0x30c739,'deactivated':_0x596ec1};}catch(_0x2340a9){return await _0x50786d[_0x3b1411(0x191)](),console[_0x3b1411(0x140)](_0x3b1411(0x1d4),_0x2340a9),{'success':![],'error':_0x2340a9['message']};}}),ipcMain[_0x1a58a8(0x13e)]('print-receipt',async(_0x3cf8cd,_0x2c6fa2,_0x571de5={})=>{const _0x36cfbc=_0x1a58a8;let _0x1366e0=new BrowserWindow({'show':![],'webPreferences':{'nodeIntegration':![]}});return _0x1366e0[_0x36cfbc(0x190)](_0x36cfbc(0x18f)+encodeURIComponent(_0x2c6fa2)),new Promise(_0x3e118b=>{const _0x502c93=_0x36cfbc;_0x1366e0[_0x502c93(0x160)][_0x502c93(0x14f)](_0x502c93(0x19b),()=>{const _0x194234=_0x502c93;_0x1366e0['webContents'][_0x194234(0x141)]({'silent':![],'printBackground':!![],'pageSize':_0x571de5[_0x194234(0x151)]||'A5','landscape':_0x571de5['landscape']||![],'margins':{'marginType':'default'}},(_0x2f75c2,_0x450f15)=>{const _0xb5e70d=_0x194234;_0x1366e0[_0xb5e70d(0x17c)](),_0x1366e0=null,_0x2f75c2?_0x3e118b({'success':!![]}):_0x3e118b({'success':![],'error':_0x450f15});});});});});
+const { app, BrowserWindow, ipcMain } = require('electron');
+const path = require('path');
+const fs = require('fs');
+const sql = require('mssql');
+const crypto = require('crypto');
+const { machineIdSync } = require('node-machine-id');
+const { autoUpdater } = require('electron-updater');
+const { initializeDatabase, hashPassword } = require('./dbInit.cjs');
+
+let mainWindow;
+let sqlPool = null;
+let licensingPool = null;
+
+// Cloud VPS database connection specifically for licensing checks (Option B)
+const LIC_DB_CONFIG = {
+  server: '152.239.115.119',
+  port: 1438,
+  database: 'fees_tracker',
+  user: 'fees_client_user',
+  password: 'ClientSecureAccess@99!',
+  options: {
+    encrypt: true,
+    trustServerCertificate: true,
+    enableArithAbort: true,
+    connectTimeout: 8000
+  },
+  pool: {
+    max: 3,
+    min: 0,
+    idleTimeoutMillis: 15000
+  }
+};
+
+async function getLicensingPool() {
+  if (LIC_DB_CONFIG.server === 'YOUR_CLOUD_VPS_IP') {
+    throw new Error('Licensing server IP is not configured. Please contact the administrator.');
+  }
+  if (!licensingPool) {
+    licensingPool = await sql.connect(LIC_DB_CONFIG);
+  }
+  return licensingPool;
+}
+
+const configPath = path.join(app.getPath('userData'), 'db-config.json');
+const licensePath = path.join(app.getPath('userData'), 'license.json');
+const LICENSE_SALT = 'OrientFeesTrackerSystemSecretSalt2026!';
+
+// Helper to load db config
+function getDbConfig() {
+  if (fs.existsSync(configPath)) {
+    try {
+      return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    } catch (e) {
+      console.error('Failed to read config file', e);
+    }
+  }
+  return null;
+}
+
+// Close SQL Pool on exit
+async function closePool() {
+  if (sqlPool) {
+    try {
+      await sqlPool.close();
+      sqlPool = null;
+    } catch (err) {
+      console.error('Error closing SQL Pool', err);
+    }
+  }
+  if (licensingPool) {
+    try {
+      await licensingPool.close();
+      licensingPool = null;
+    } catch (err) {
+      console.error('Error closing Licensing SQL Pool', err);
+    }
+  }
+}
+
+// Connect to SQL Server
+async function getPool(configOverride = null) {
+  const config = configOverride || getDbConfig();
+  if (!config) {
+    throw new Error('Database connection configuration not found.');
+  }
+
+  // If there's an existing pool, close it first if configuring override
+  if (configOverride && sqlPool) {
+    await closePool();
+  }
+
+  if (!sqlPool) {
+    const dbConfig = {
+      server: config.server,
+      port: parseInt(config.port) || 1433,
+      database: config.database,
+      user: config.user,
+      password: config.password,
+      options: {
+        encrypt: config.encrypt !== false, // default true
+        trustServerCertificate: config.trustServerCertificate !== false, // default true for local/VPN DBs
+        enableArithAbort: true,
+        connectTimeout: 60000, // Increased to 60s to survive extreme 1000ms ping latencies
+        requestTimeout: 120000  // Increased to 120s to allow large reports to load over slow connections
+      },
+      pool: {
+        max: 15, // Increase pool size slightly
+        min: 1,
+        idleTimeoutMillis: 60000
+      }
+    };
+    sqlPool = await sql.connect(dbConfig);
+    
+    try {
+      const request = sqlPool.request();
+      await request.query(`
+        if exists (select * from sys.columns where object_id = object_id('students') and name = 'dob')
+        begin
+          alter table students alter column dob date null;
+        end
+
+        if not exists (select * from sysobjects where name='org_config' and xtype='U')
+        begin
+          create table org_config (
+            id int primary key default 1 check (id = 1),
+            org_name varchar(150) default 'GRACE BAPTIST CREDIT UNION' not null,
+            location varchar(150) default 'AMAKOM-KUMASI' not null,
+            telephone varchar(100) default 'TEL: 0244757447/0207447016' not null,
+            school_name varchar(150) default 'Space Academy' not null,
+            logo_url varchar(max) null
+          );
+          insert into org_config (org_name, location, telephone, school_name)
+          values ('GRACE BAPTIST CREDIT UNION', 'AMAKOM-KUMASI', 'TEL: 0244757447/0207447016', 'Space Academy');
+        end
+
+        if not exists (select * from sysobjects where name='lic_keys' and xtype='U')
+        begin
+          create table lic_keys (
+            id int identity(1,1) primary key,
+            license_key varchar(100) unique not null,
+            max_devices int default 1 not null,
+            expiry_date date not null,
+            is_active bit default 1 not null
+          );
+          insert into lic_keys (license_key, max_devices, expiry_date, is_active)
+          values ('X89H2P9L3K5M7W1', 5, '2027-12-31', 1);
+        end
+
+        if not exists (select * from sysobjects where name='lic_activations' and xtype='U')
+        begin
+          create table lic_activations (
+            id int identity(1,1) primary key,
+            key_id int foreign key references lic_keys(id) on delete cascade not null,
+            machine_id varchar(150) not null,
+            activated_at datetime default getdate() not null,
+            unique (key_id, machine_id)
+          );
+        end
+      `);
+      console.log('Startup database migrations executed successfully (dob nullable & org_config initialized).');
+    } catch (migErr) {
+      console.error('Failed to run startup migrations:', migErr);
+    }
+  }
+  return sqlPool;
+}
+
+function createWindow() {
+  mainWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    minWidth: 1000,
+    minHeight: 700,
+    frame: false, // Frameless window
+    icon: path.join(__dirname, 'resources/icon.png'),
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.cjs'),
+      contextIsolation: true,
+      nodeIntegration: false
+    },
+    autoHideMenuBar: true
+  });
+
+  // Auto Updater Configuration
+  autoUpdater.autoDownload = false;
+
+  autoUpdater.on('checking-for-update', () => {
+    if (mainWindow) {
+      mainWindow.webContents.send('updater-message', { status: 'checking', text: 'Checking for updates...' });
+    }
+  });
+
+  autoUpdater.on('update-available', (info) => {
+    if (mainWindow) {
+      mainWindow.webContents.send('updater-message', {
+        status: 'available',
+        version: info.version,
+        releaseNotes: info.releaseNotes || 'Performance improvements and optimizations.',
+        text: `Update version ${info.version} is available.`
+      });
+    }
+  });
+
+  autoUpdater.on('update-not-available', () => {
+    if (mainWindow) {
+      mainWindow.webContents.send('updater-message', { status: 'not-available', text: 'App is up to date.' });
+    }
+  });
+
+  autoUpdater.on('error', (err) => {
+    if (mainWindow) {
+      mainWindow.webContents.send('updater-message', { status: 'error', text: `Update error: ${err.message || 'Connection issue.'}` });
+    }
+  });
+
+  autoUpdater.on('download-progress', (progressObj) => {
+    if (mainWindow) {
+      mainWindow.webContents.send('updater-message', {
+        status: 'downloading',
+        progressPercent: progressObj.percent,
+        text: `Downloading... ${Math.round(progressObj.percent)}%`
+      });
+    }
+  });
+
+  autoUpdater.on('update-downloaded', () => {
+    if (mainWindow) {
+      mainWindow.webContents.send('updater-message', {
+        status: 'downloaded',
+        text: 'Update downloaded. Ready to install.'
+      });
+    }
+  });
+
+  // Perform check a few seconds after application launch
+  setTimeout(() => {
+    // Only check for updates in packaged environment
+    if (app.isPackaged) {
+      autoUpdater.checkForUpdates().catch(e => console.error('Fail to check update', e));
+    }
+  }, 6000);
+
+  const isDev = process.env.NODE_ENV === 'development';
+  if (isDev) {
+    mainWindow.loadURL('http://localhost:5174');
+    mainWindow.webContents.openDevTools();
+  } else {
+    mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
+  }
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+}
+
+app.whenReady().then(() => {
+  createWindow();
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
+});
+
+app.on('window-all-closed', async () => {
+  await closePool();
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+// Window controls IPC
+ipcMain.handle('win-minimize', () => {
+  if (mainWindow) mainWindow.minimize();
+});
+
+ipcMain.handle('win-maximize', () => {
+  if (mainWindow) {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
+      mainWindow.maximize();
+    }
+  }
+});
+
+ipcMain.handle('win-close', () => {
+  if (mainWindow) mainWindow.close();
+});
+
+// Update Control IPC
+ipcMain.handle('upd-check', async () => {
+  try {
+    const res = await autoUpdater.checkForUpdates();
+    return { success: true, updateInfo: res ? res.updateInfo : null };
+  } catch (err) {
+    console.error('Update check trigger error', err);
+    return { success: false, error: err.message };
+  }
+});
+
+ipcMain.handle('upd-download', async () => {
+  try {
+    await autoUpdater.downloadUpdate();
+    return { success: true };
+  } catch (err) {
+    console.error('Update download trigger error', err);
+    return { success: false, error: err.message };
+  }
+});
+
+ipcMain.handle('upd-install', () => {
+  try {
+    autoUpdater.quitAndInstall();
+    return { success: true };
+  } catch (err) {
+    console.error('Update install trigger error', err);
+    return { success: false, error: err.message };
+  }
+});
+
+// IPC handlers
+ipcMain.handle('db-check-config', () => {
+  return getDbConfig() !== null;
+});
+
+ipcMain.handle('db-save-config', async (event, config) => {
+  try {
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf8');
+    // Test the new connection right away
+    await getPool(config);
+    return { success: true };
+  } catch (err) {
+    console.error('Failed to save or connect config', err);
+    // Delete bad config
+    if (fs.existsSync(configPath)) {
+      fs.unlinkSync(configPath);
+    }
+    return { success: false, error: err.message };
+  }
+});
+
+ipcMain.handle('db-get-connection-info', async () => {
+  try {
+    const config = getDbConfig();
+    if (!config) return { success: false, error: 'No connection configuration found.' };
+    return {
+      success: true,
+      config: {
+        server: config.server,
+        port: config.port,
+        database: config.database,
+        user: config.user,
+        encrypt: config.encrypt,
+        trustServerCertificate: config.trustServerCertificate
+      }
+    };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
+ipcMain.handle('db-test-connection', async (event, config) => {
+  const { performance } = require('perf_hooks');
+  try {
+    const tempPool = await sql.connect({
+      server: config.server,
+      port: parseInt(config.port) || 1433,
+      database: config.database,
+      user: config.user,
+      password: config.password,
+      options: {
+        encrypt: config.encrypt !== false,
+        trustServerCertificate: config.trustServerCertificate !== false,
+        connectTimeout: 30000 // Increased to 30s to allow test connection negotiations over 1000ms ping
+      }
+    });
+
+    const queryStart = performance.now();
+    const result = await tempPool.request().query("SELECT 1 AS [test], (SELECT COUNT(*) FROM sysobjects WHERE name IN ('students', 'org_config', 'users')) AS [schema_check]");
+    const latency = Math.round(performance.now() - queryStart);
+
+    const tablesCount = result.recordset[0].schema_check;
+    const isInitialized = tablesCount >= 2;
+
+    await tempPool.close();
+
+    let strength = 'Slow / Unstable';
+    if (latency < 50) {
+      strength = 'Excellent (Fast LAN/Local)';
+    } else if (latency < 150) {
+      strength = 'Good (Standard Remote)';
+    } else if (latency < 300) {
+      strength = 'Moderate (Slight Delay)';
+    }
+
+    return {
+      success: true,
+      latency,
+      strength,
+      isInitialized
+    };
+  } catch (err) {
+    console.error('Test connection failed', err);
+    return { success: false, error: err.message };
+  }
+});
+
+// Generic safe parameterized SQL query execution
+ipcMain.handle('db-query', async (event, { query, params }) => {
+  try {
+    const pool = await getPool();
+    const request = pool.request();
+    
+    if (params) {
+      for (const param of params) {
+        // Param format: { name: 'paramName', value: paramValue, type: 'VarChar' }
+        if (param.type && sql[param.type]) {
+          request.input(param.name, sql[param.type], param.value);
+        } else {
+          request.input(param.name, param.value);
+        }
+      }
+    }
+    
+    const result = await request.query(query);
+    return { success: true, recordset: result.recordset, rowsAffected: result.rowsAffected };
+  } catch (err) {
+    console.error('Database query error', err);
+    return { success: false, error: err.message };
+  }
+});
+
+// DB Initialization Handler
+ipcMain.handle('db-initialize', async () => {
+  try {
+    const pool = await getPool();
+    await initializeDatabase(pool);
+    return { success: true };
+  } catch (err) {
+    console.error('Failed to initialize database schema', err);
+    return { success: false, error: err.message };
+  }
+});
+
+// Licensing IPC Handlers
+ipcMain.handle('lic-get-machine-id', () => {
+  try {
+    return { success: true, machineId: machineIdSync({ original: true }) };
+  } catch (err) {
+    console.error('Failed to query machine ID', err);
+    return { success: false, error: 'Could not fetch machine hardware fingerprint.' };
+  }
+});
+
+ipcMain.handle('lic-check-active', () => {
+  try {
+    if (!fs.existsSync(licensePath)) {
+      return { active: false, error: 'License file not found. Activation required.' };
+    }
+    const licData = JSON.parse(fs.readFileSync(licensePath, 'utf8'));
+    const currentMachineId = machineIdSync({ original: true });
+
+    // Validate Signature to ensure it wasn't tampered with (include lastOpened in signature check)
+    const expectedSig = crypto
+      .createHmac('sha256', LICENSE_SALT)
+      .update(licData.machineId + licData.expiryDate + licData.licenseKey + (licData.lastOpened || ''))
+      .digest('hex');
+
+    if (licData.signature !== expectedSig) {
+      return { active: false, error: 'Invalid license signature. File may be corrupted or tampered with.' };
+    }
+
+    if (licData.machineId !== currentMachineId) {
+      return { active: false, error: 'License mismatch. This key is registered to another machine.' };
+    }
+
+    // Anti-Rollback system clock tamper check
+    const now = new Date();
+    const lastOpened = licData.lastOpened ? new Date(licData.lastOpened) : null;
+    if (lastOpened && now < lastOpened) {
+      return { 
+        active: false, 
+        error: 'System clock tampering detected. The current time is behind the last recorded execution time. Please correct your system clock.' 
+      };
+    }
+
+    // Expiry check
+    const expiry = new Date(licData.expiryDate);
+    if (now > expiry) {
+      return { active: false, error: `License expired on ${expiry.toLocaleDateString('en-GB')}.` };
+    }
+
+    // Update the lastOpened timestamp to the current time, re-sign, and save locally
+    licData.lastOpened = now.toISOString();
+    licData.signature = crypto
+      .createHmac('sha256', LICENSE_SALT)
+      .update(licData.machineId + licData.expiryDate + licData.licenseKey + licData.lastOpened)
+      .digest('hex');
+    fs.writeFileSync(licensePath, JSON.stringify(licData, null, 2), 'utf8');
+
+    return { active: true, info: { expiryDate: licData.expiryDate, licenseKey: licData.licenseKey } };
+  } catch (err) {
+    console.error('License verification failed', err);
+    return { active: false, error: 'Error checking license validity.' };
+  }
+});
+
+ipcMain.handle('lic-activate', (event, { licenseKey, expiryDate, signature }) => {
+  try {
+    const currentMachineId = machineIdSync({ original: true });
+
+    // Re-verify signature
+    const expectedSig = crypto
+      .createHmac('sha256', LICENSE_SALT)
+      .update(currentMachineId + expiryDate + licenseKey)
+      .digest('hex');
+
+    if (signature !== expectedSig) {
+      return { success: false, error: 'Invalid activation code or signature for this machine.' };
+    }
+
+    // Save token
+    const licInfo = {
+      licenseKey,
+      machineId: currentMachineId,
+      expiryDate,
+      signature
+    };
+    fs.writeFileSync(licensePath, JSON.stringify(licInfo, null, 2), 'utf8');
+    return { success: true };
+  } catch (err) {
+    console.error('License activation error', err);
+    return { success: false, error: err.message || 'Activation failed.' };
+  }
+});
+
+ipcMain.handle('lic-activate-online', async (event, { licenseKey }) => {
+  try {
+    const currentMachineId = machineIdSync({ original: true });
+
+    // Connect to secure licensing VPS database
+    const pool = await getLicensingPool();
+    
+    // Check if key is valid, active, and get limits/expiry
+    const keyReq = pool.request();
+    keyReq.input('license_key', sql.VarChar(100), licenseKey);
+    const keyRes = await keyReq.query(`
+      SELECT id, max_devices, expiry_date, is_active 
+      FROM lic_keys 
+      WHERE license_key = @license_key
+    `);
+
+    if (keyRes.recordset.length === 0) {
+      return { success: false, error: 'Invalid license key. Please check spelling.' };
+    }
+
+    const keyData = keyRes.recordset[0];
+    if (!keyData.is_active) {
+      return { success: false, error: 'This license key has been deactivated.' };
+    }
+
+    // Get secure time directly from the Cloud VPS database to prevent system clock tampering
+    const timeRes = await pool.request().query('SELECT GETDATE() AS server_time');
+    const vpsTime = new Date(timeRes.recordset[0].server_time);
+
+    const expiry = new Date(keyData.expiry_date);
+    if (vpsTime > expiry) {
+      return { success: false, error: `This license expired on ${expiry.toLocaleDateString('en-GB')}.` };
+    }
+
+    // Check existing devices registered for this key
+    const actReq = pool.request();
+    actReq.input('key_id', sql.Int, keyData.id);
+    const actRes = await actReq.query(`
+      SELECT machine_id 
+      FROM lic_activations 
+      WHERE key_id = @key_id
+    `);
+
+    const registeredDevices = actRes.recordset.map(r => r.machine_id);
+    const isAlreadyActivated = registeredDevices.includes(currentMachineId);
+
+    if (!isAlreadyActivated) {
+      if (registeredDevices.length >= keyData.max_devices) {
+        return { 
+          success: false, 
+          error: `Activation limit reached (${keyData.max_devices} devices max). Deactivate another workstation first.` 
+        };
+      }
+
+      // Register this workstation machine ID
+      const regReq = pool.request();
+      regReq.input('key_id', sql.Int, keyData.id);
+      regReq.input('machine_id', sql.VarChar(150), currentMachineId);
+      await regReq.query(`
+        INSERT INTO lic_activations (key_id, machine_id) 
+        VALUES (@key_id, @machine_id)
+      `);
+    }
+
+    // Format expiry date for local token payload (YYYY-MM-DD)
+    const expiryStr = expiry.toISOString().split('T')[0];
+    const lastOpenedStr = vpsTime.toISOString();
+
+    // Compute cryptographic signature including the initial activation time
+    const signature = crypto
+      .createHmac('sha256', LICENSE_SALT)
+      .update(currentMachineId + expiryStr + licenseKey + lastOpenedStr)
+      .digest('hex');
+
+    // Save token locally for offline checks
+    const licInfo = {
+      licenseKey,
+      machineId: currentMachineId,
+      expiryDate: expiryStr,
+      lastOpened: lastOpenedStr,
+      signature
+    };
+    fs.writeFileSync(licensePath, JSON.stringify(licInfo, null, 2), 'utf8');
+
+    // Automate Task Scheduler daily backups for local database setups
+    const dbConfig = getDbConfig();
+    if (dbConfig) {
+      const isLocalHost = 
+        dbConfig.server === 'localhost' || 
+        dbConfig.server === '127.0.0.1' || 
+        dbConfig.server === '.' || 
+        dbConfig.server.startsWith('192.168.') || 
+        dbConfig.server.startsWith('10.') || 
+        dbConfig.server.startsWith('172.');
+
+      if (isLocalHost) {
+        console.log('Local database configuration detected. Extracting and registering scheduled backup task...');
+        const { exec } = require('child_process');
+        try {
+          const originalScriptPath = path.join(__dirname, 'resources/setup-backup-task.ps1');
+          const tempScriptPath = path.join(app.getPath('temp'), 'setup-backup-task.ps1');
+          const scriptContent = fs.readFileSync(originalScriptPath, 'utf8');
+          fs.writeFileSync(tempScriptPath, scriptContent, 'utf8');
+
+          const cmd = `powershell.exe -ExecutionPolicy Bypass -File "${tempScriptPath}"`;
+          exec(cmd, (execErr, stdout, stderr) => {
+            // Clean up temp file
+            try { fs.unlinkSync(tempScriptPath); } catch (e) {}
+            if (execErr) {
+              console.error('Failed to register scheduled backup task:', execErr);
+            } else {
+              console.log('Automated scheduled backup task registered successfully:', stdout);
+            }
+          });
+        } catch (readErr) {
+          console.error('Failed to prepare or run backup setup script:', readErr);
+        }
+      }
+    }
+
+    return { success: true, expiryDate: expiryStr };
+  } catch (err) {
+    console.error('Online license activation error', err);
+    return { success: false, error: err.message || 'Connection timeout or database activation failure.' };
+  }
+});
+
+// Secure Login Handler
+ipcMain.handle('auth-login', async (event, { username, password }) => {
+  try {
+    const pool = await getPool();
+    const request = pool.request();
+    request.input('username', sql.VarChar(50), username);
+    
+    const result = await request.query('SELECT id, username, password_hash, role, is_active FROM users WHERE username = @username');
+    if (result.recordset.length === 0) {
+      return { success: false, error: 'Invalid username or password.' };
+    }
+    
+    const user = result.recordset[0];
+    if (!user.is_active) {
+      return { success: false, error: 'Account is deactivated. Contact administrator.' };
+    }
+    
+    const inputHash = hashPassword(password);
+    if (inputHash !== user.password_hash) {
+      return { success: false, error: 'Invalid username or password.' };
+    }
+    
+    return { 
+      success: true, 
+      user: { id: user.id, username: user.username, role: user.role } 
+    };
+  } catch (err) {
+    console.error('Auth login error', err);
+    return { success: false, error: err.message };
+  }
+});
+
+// Bulk Import Students Transaction Handler
+ipcMain.handle('db-bulk-import-students', async (event, { studentsList, deactivateLeavers, creatorId }) => {
+  const pool = await getPool();
+  const transaction = new sql.Transaction(pool);
+  
+  try {
+    await transaction.begin();
+    
+    let added = 0;
+    let updated = 0;
+    const importedIds = [];
+    
+    for (const student of studentsList) {
+      importedIds.push(student.student_id);
+      
+      const checkReq = new sql.Request(transaction);
+      checkReq.input('chk_id', sql.VarChar(50), student.student_id);
+      const checkRes = await checkReq.query('SELECT id FROM students WHERE student_id = @chk_id');
+      
+      const reqUpsert = new sql.Request(transaction);
+      reqUpsert.input('student_id', sql.VarChar(50), student.student_id);
+      reqUpsert.input('full_name', sql.VarChar(150), student.full_name);
+      reqUpsert.input('dob', sql.Date, student.dob || null);
+      reqUpsert.input('grade_class', sql.VarChar(50), student.grade_class.toUpperCase());
+      reqUpsert.input('guardian_phone', sql.VarChar(20), student.guardian_phone);
+      
+      if (checkRes.recordset.length > 0) {
+        await reqUpsert.query(`
+          UPDATE students 
+          SET full_name = @full_name, dob = @dob, grade_class = @grade_class, guardian_phone = @guardian_phone, is_active = 1
+          WHERE student_id = @student_id
+        `);
+        updated++;
+      } else {
+        await reqUpsert.query(`
+          INSERT INTO students (student_id, full_name, dob, grade_class, guardian_phone, is_active)
+          VALUES (@student_id, @full_name, @dob, @grade_class, @guardian_phone, 1)
+        `);
+        added++;
+      }
+    }
+    
+    let deactivatedCount = 0;
+    if (deactivateLeavers && importedIds.length > 0) {
+      const leaverReq = new sql.Request(transaction);
+      const escapedIds = importedIds.map(id => `'${id.replace(/'/g, "''")}'`).join(',');
+      const dRes = await leaverReq.query(`
+        UPDATE students 
+        SET is_active = 0 
+        WHERE student_id NOT IN (${escapedIds}) AND is_active = 1
+      `);
+      deactivatedCount = dRes.rowsAffected[0] || 0;
+    }
+    
+    await transaction.commit();
+    return { success: true, added, updated, deactivated: deactivatedCount };
+  } catch (err) {
+    await transaction.rollback();
+    console.error('Bulk import transaction failed, rolled back', err);
+    return { success: false, error: err.message };
+  }
+});
+
+// App print capabilities
+ipcMain.handle('print-receipt', async (event, htmlContent, options = {}) => {
+  // Create an offscreen window to render and print
+  let workerWindow = new BrowserWindow({
+    show: false,
+    webPreferences: {
+      nodeIntegration: false
+    }
+  });
+
+  workerWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`);
+  
+  return new Promise((resolve) => {
+    workerWindow.webContents.once('did-finish-load', () => {
+      // Print options customized for A5 / A4 / Thermal
+      workerWindow.webContents.print({
+        silent: false, // Open system printer settings/preview dialog
+        printBackground: true,
+        pageSize: options.pageSize || 'A5',
+        margins: { marginType: 'default' }
+      }, (success, failureReason) => {
+        workerWindow.close();
+        workerWindow = null;
+        if (success) {
+          resolve({ success: true });
+        } else {
+          resolve({ success: false, error: failureReason });
+        }
+      });
+    });
+  });
+});

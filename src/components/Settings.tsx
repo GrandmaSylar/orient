@@ -48,9 +48,15 @@ export const Settings: React.FC<SettingsProps> = ({ onResetDbConfig, currentUser
   const [logoUrl, setLogoUrl] = useState('');
   const [savingOrg, setSavingOrg] = useState(false);
 
+  // DB Diagnostics states
+  const [dbInfo, setDbInfo] = useState<any>(null);
+  const [dbStrength, setDbStrength] = useState<string>('Checking...');
+  const [dbLatency, setDbLatency] = useState<number | null>(null);
+
   useEffect(() => {
     fetchUsers();
     fetchOrgConfig();
+    fetchDbDiagnostics();
   }, []);
 
   const fetchOrgConfig = async () => {
@@ -68,6 +74,28 @@ export const Settings: React.FC<SettingsProps> = ({ onResetDbConfig, currentUser
       }
     } catch (err) {
       console.error('Failed to load org config', err);
+    }
+  };
+
+  const fetchDbDiagnostics = async () => {
+    try {
+      const infoRes = await window.electronAPI.invoke('db-get-connection-info');
+      if (infoRes.success && infoRes.config) {
+        setDbInfo(infoRes.config);
+        const testRes = await window.electronAPI.invoke('db-test-connection', infoRes.config);
+        if (testRes.success) {
+          setDbStrength(testRes.strength || 'Unknown');
+          setDbLatency(testRes.latency || 0);
+        } else {
+          setDbStrength('Connection Unreachable');
+          setDbLatency(null);
+        }
+      } else {
+        setDbStrength('Not Configured');
+      }
+    } catch (err) {
+      console.error('Failed to query connection info diagnostics', err);
+      setDbStrength('Error checking status');
     }
   };
 
@@ -193,6 +221,10 @@ export const Settings: React.FC<SettingsProps> = ({ onResetDbConfig, currentUser
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedUser || !resetPasswordVal.trim()) return;
+    if (selectedUser.role === 'DEV' && currentUser.role !== 'DEV') {
+      showDialog('error', 'Action Refused', 'You do not have permission to modify a developer account.');
+      return;
+    }
     setSubmitting(true);
     setError(null);
     setSuccess(null);
@@ -230,6 +262,10 @@ export const Settings: React.FC<SettingsProps> = ({ onResetDbConfig, currentUser
   };
 
   const toggleUserStatus = async (user: UserAccount) => {
+    if (user.role === 'DEV' && currentUser.role !== 'DEV') {
+      showDialog('error', 'Action Refused', 'You do not have permission to modify a developer account.');
+      return;
+    }
     if (user.id === currentUser.id) {
       showDialog('warning', 'Action Refused', 'You cannot deactivate your own logged-in account.');
       return;
@@ -317,15 +353,17 @@ export const Settings: React.FC<SettingsProps> = ({ onResetDbConfig, currentUser
                     </td>
                     <td style={{ textAlign: 'right' }}>
                       <div style={{ display: 'inline-flex', gap: '8px' }}>
-                        <button
-                          className="btn btn-secondary btn-sm"
-                          onClick={() => { setError(null); setSuccess(null); setSelectedUser(u); setResetPasswordVal(''); setShowResetModal(true); }}
-                          style={{ padding: '4px 6px' }}
-                          title="Reset Password"
-                        >
-                          <KeyRound size={12} />
-                        </button>
-                        {u.id !== currentUser.id && (
+                        {(u.role !== 'DEV' || currentUser.role === 'DEV') && (
+                          <button
+                            className="btn btn-secondary btn-sm"
+                            onClick={() => { setError(null); setSuccess(null); setSelectedUser(u); setResetPasswordVal(''); setShowResetModal(true); }}
+                            style={{ padding: '4px 6px' }}
+                            title="Reset Password"
+                          >
+                            <KeyRound size={12} />
+                          </button>
+                        )}
+                        {u.id !== currentUser.id && (u.role !== 'DEV' || currentUser.role === 'DEV') && (
                           <button
                             className={`btn ${u.is_active ? 'btn-danger' : 'btn-success'} btn-sm`}
                             onClick={() => toggleUserStatus(u)}
@@ -423,6 +461,51 @@ export const Settings: React.FC<SettingsProps> = ({ onResetDbConfig, currentUser
 
         <div className="panel" style={{ padding: '24px' }}>
           <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '16px' }}>System Diagnostics</h3>
+
+          {dbInfo ? (
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              padding: '16px',
+              border: '1px solid var(--border-color)',
+              borderRadius: 'var(--radius-sm)',
+              backgroundColor: 'var(--bg-primary)',
+              marginBottom: '16px',
+              fontSize: '0.88rem',
+              textAlign: 'left'
+            }}>
+              <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '4px', color: 'var(--accent-primary)' }}>
+                Active Database Connection
+              </h4>
+              <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 2fr', gap: '4px' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>Server Host:</span>
+                <strong>{dbInfo.server}:{dbInfo.port || 1433}</strong>
+                
+                <span style={{ color: 'var(--text-secondary)' }}>Database:</span>
+                <strong>{dbInfo.database}</strong>
+
+                <span style={{ color: 'var(--text-secondary)' }}>Username:</span>
+                <strong>{dbInfo.user}</strong>
+                
+                <span style={{ color: 'var(--text-secondary)' }}>Connection Status:</span>
+                <span style={{ 
+                  color: dbStrength.includes('Excellent') 
+                    ? 'var(--accent-success-hover)' 
+                    : dbStrength.includes('Good')
+                      ? 'var(--accent-primary)' 
+                      : 'var(--accent-danger)',
+                  fontWeight: 700
+                }}>
+                  {dbStrength} {dbLatency !== null && `(${dbLatency}ms)`}
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div style={{ padding: '12px', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', backgroundColor: 'var(--bg-primary)', marginBottom: '16px', fontSize: '0.88rem' }}>
+              Retrieving active connection statistics...
+            </div>
+          )}
           
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '20px', lineHeight: 1.45 }}>
             If your database server IP address, LAN routing, or credentials change, you can trigger a re-configuration of the main connection pool.
@@ -501,6 +584,9 @@ export const Settings: React.FC<SettingsProps> = ({ onResetDbConfig, currentUser
                   <option value="TELLER">TELLER (Post deposits, same-day voids, view reports)</option>
                   <option value="SUPERVISOR">SUPERVISOR (Post, void history, view analytics, bulk imports)</option>
                   <option value="ADMIN">ADMIN (Full super-user permissions, settings, audit trails)</option>
+                  {currentUser.role === 'DEV' && (
+                    <option value="DEV">DEV (Elevated System Developer with unrestricted access)</option>
+                  )}
                 </select>
               </div>
 

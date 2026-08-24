@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Database, Server, User, Lock, Activity, ShieldCheck } from 'lucide-react';
+import { Database, Server, User, Lock, Activity, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 
 interface DbWizardProps {
   onSuccess: () => void;
@@ -11,6 +11,7 @@ export const DbWizard: React.FC<DbWizardProps> = ({ onSuccess }) => {
   const [database, setDatabase] = useState('');
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [encrypt, setEncrypt] = useState(true);
   const [trustCert, setTrustCert] = useState(true);
 
@@ -34,7 +35,13 @@ export const DbWizard: React.FC<DbWizardProps> = ({ onSuccess }) => {
     try {
       const res = await window.electronAPI.invoke('db-test-connection', getFormConfig());
       if (res.success) {
-        setMessage({ text: 'Connection successful! SQL Server is reachable.', type: 'success' });
+        const schemaMsg = res.isInitialized 
+          ? 'Database is fully configured and structured.' 
+          : 'Database is empty. Schema initialization will run on setup.';
+        setMessage({ 
+          text: `Connection successful! Strength: ${res.strength} (Latency: ${res.latency}ms). ${schemaMsg}`, 
+          type: 'success' 
+        });
       } else {
         setMessage({ text: `Connection failed: ${res.error}`, type: 'error' });
       }
@@ -164,13 +171,38 @@ export const DbWizard: React.FC<DbWizardProps> = ({ onSuccess }) => {
                   <Lock size={14} /> Password
                 </span>
               </label>
-              <input 
-                type="password" 
-                className="form-control" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                placeholder="••••••••"
-              />
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  className="form-control" 
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)} 
+                  placeholder="••••••••"
+                  style={{
+                    paddingRight: '40px',
+                    width: '100%'
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    right: '10px',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: 'var(--text-tertiary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '4px',
+                    outline: 'none'
+                  }}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
             </div>
           </div>
 

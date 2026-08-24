@@ -12,8 +12,9 @@ interface DashboardProps {
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate, onLogout }) => {
-  const isSupervisorOrAdmin = user.role === 'SUPERVISOR' || user.role === 'ADMIN';
-  const isAdmin = user.role === 'ADMIN';
+  const isDev = user.role === 'DEV';
+  const isSupervisorOrAdmin = user.role === 'SUPERVISOR' || user.role === 'ADMIN' || isDev;
+  const isAdmin = user.role === 'ADMIN' || isDev;
 
   const menuItems = [
     {
