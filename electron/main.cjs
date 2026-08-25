@@ -89,7 +89,16 @@ async function getPool(configOverride = null) {
     await closePool();
   }
 
-  if (!sqlPool) {
+  if (!sqlPool || !sqlPool.connected) {
+    if (sqlPool) {
+      try {
+        await sqlPool.close();
+      } catch (e) {
+        console.error('Error closing disconnected pool', e);
+      }
+      sqlPool = null;
+    }
+
     const dbConfig = {
       server: config.server,
       port: parseInt(config.port) || 1433,
@@ -104,9 +113,9 @@ async function getPool(configOverride = null) {
         requestTimeout: 120000  // Increased to 120s to allow large reports to load over slow connections
       },
       pool: {
-        max: 15, // Increase pool size slightly
-        min: 1,
-        idleTimeoutMillis: 60000
+        max: 15,
+        min: 0, // Reset to 0 to prevent connection startup lockups
+        idleTimeoutMillis: 30000 // Revert to 30s to release idle local resources
       }
     };
     sqlPool = await sql.connect(dbConfig);
