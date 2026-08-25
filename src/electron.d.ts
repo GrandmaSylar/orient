@@ -80,6 +80,20 @@ declare global {
     invoke(
       channel: 'upd-install'
     ): Promise<{ success: boolean; error?: string }>;
+    invoke(
+      channel: 'app-get-version'
+    ): Promise<string>;
+    invoke(
+      channel: 'db-get-status'
+    ): Promise<{
+      success: boolean;
+      status: 'Connected' | 'Disconnected' | 'Not Configured' | 'Checking';
+      latency: number;
+      strength: 'Excellent' | 'Good' | 'Moderate' | 'Poor' | 'None';
+      server?: string;
+      database?: string;
+      error?: string;
+    }>;
     on(channel: string, func: (...args: any[]) => void): () => void;
   }
 

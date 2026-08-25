@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   DollarSign, Users, FileSpreadsheet, Settings, 
-  TrendingUp, UploadCloud, ShieldAlert, LogOut, ShieldCheck 
+  UploadCloud, ShieldAlert, LogOut, ShieldCheck 
 } from 'lucide-react';
 import { FloatingBackground } from './FloatingBackground';
 
@@ -51,15 +51,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate, onLogout
       icon: Settings,
       color: '#f59e0b',
       bgColor: '#fef3c7',
-      allowed: isSupervisorOrAdmin
-    },
-    {
-      id: 'analytics',
-      title: 'Analytics Dashboard',
-      description: 'Graph payment trends, track collection targets, and monitor teller totals.',
-      icon: TrendingUp,
-      color: '#8b5cf6',
-      bgColor: '#ede9fe',
       allowed: isSupervisorOrAdmin
     },
     {

@@ -15,7 +15,7 @@ import { CustomDialog } from './components/CustomDialog';
 import { 
   ShieldAlert, Landmark, 
   ShieldCheck, Wrench, LayoutDashboard, DollarSign, 
-  Users, FileSpreadsheet, Settings as SettingsIcon, TrendingUp, UploadCloud, Box 
+  Users, FileSpreadsheet, Settings as SettingsIcon, UploadCloud, Box 
 } from 'lucide-react';
 
 type AppState = 'CONNECTING' | 'SETUP_WIZARD' | 'LICENSE_REQUIRED' | 'LOGIN' | 'DASHBOARD' | 'MODULE';
@@ -34,6 +34,15 @@ function App() {
   // Splash Screen States
   const [splashVisible, setSplashVisible] = useState(true);
   const [splashFadeOut, setSplashFadeOut] = useState(false);
+
+  // Status & Version States
+  const [appVersion, setAppVersion] = useState('1.1.0');
+  const [dbStatus, setDbStatus] = useState<{
+    status: 'Connected' | 'Disconnected' | 'Not Configured' | 'Checking';
+    latency: number;
+    strength: 'Excellent' | 'Good' | 'Moderate' | 'Poor' | 'None';
+    server?: string;
+  }>({ status: 'Checking', latency: 0, strength: 'None' });
 
   const getTitleBarContent = () => {
     if (appState === 'LOGIN') {
@@ -66,7 +75,6 @@ function App() {
         students: { text: 'Student Directory', icon: <Users size={14} style={{ color: 'var(--accent-primary)' }} /> },
         reports: { text: 'Daily Ledger Reports', icon: <FileSpreadsheet size={14} style={{ color: 'var(--accent-primary)' }} /> },
         products: { text: 'Products Setup', icon: <SettingsIcon size={14} style={{ color: 'var(--accent-primary)' }} /> },
-        analytics: { text: 'Analytics Dashboard', icon: <TrendingUp size={14} style={{ color: 'var(--accent-primary)' }} /> },
         onboarding: { text: 'Data Onboarding', icon: <UploadCloud size={14} style={{ color: 'var(--accent-primary)' }} /> },
         audit_logs: { text: 'System Audit Logs', icon: <ShieldAlert size={14} style={{ color: 'var(--accent-primary)' }} /> },
         settings: { text: 'System Settings', icon: <ShieldCheck size={14} style={{ color: 'var(--accent-primary)' }} /> }
@@ -172,6 +180,36 @@ function App() {
     }
   };
 
+  // Fetch App Version on mount
+  useEffect(() => {
+    window.electronAPI.invoke('app-get-version')
+      .then((v) => {
+        if (v) setAppVersion(v);
+      })
+      .catch((err) => console.error('Failed to get app version', err));
+  }, []);
+
+  // Poll database status
+  useEffect(() => {
+    // Only poll when setup is complete and database config exists
+    if (appState === 'CONNECTING' || appState === 'SETUP_WIZARD') {
+      return;
+    }
+
+    const checkStatus = async () => {
+      try {
+        const res = await window.electronAPI.invoke('db-get-status');
+        setDbStatus(res);
+      } catch (err) {
+        setDbStatus({ status: 'Disconnected', latency: 0, strength: 'None' });
+      }
+    };
+
+    checkStatus();
+    const interval = setInterval(checkStatus, 15000); // Poll status every 15 seconds
+    return () => clearInterval(interval);
+  }, [appState]);
+
   const handleActivationSuccess = async () => {
     showDialog('success', 'License Activated', 'Workstation licensed successfully.');
     const configExists = await window.electronAPI.invoke('db-check-config');
@@ -238,7 +276,81 @@ function App() {
           {getTitleBarContent().icon}
           <span>{getTitleBarContent().text}</span>
         </div>
-        <div className="app-control-box">
+
+        {/* Global Connection Status Widget & Version Badge */}
+        {appState !== 'CONNECTING' && appState !== 'SETUP_WIZARD' && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            marginLeft: 'auto',
+            marginRight: '20px',
+            fontSize: '0.78rem',
+            WebkitAppRegion: 'no-drag'
+          } as React.CSSProperties}>
+            {/* Version Display */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              backgroundColor: 'var(--bg-secondary)',
+              border: '1px solid var(--border-color)',
+              padding: '2px 8px',
+              borderRadius: '4px',
+              fontWeight: 650,
+              fontSize: '0.72rem',
+              color: 'var(--text-secondary)'
+            }}>
+              v{appVersion}
+            </div>
+
+            {/* DB Status LED Widget */}
+            <div 
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '2px 8px',
+                borderRadius: '4px',
+                backgroundColor: dbStatus.status === 'Connected' 
+                  ? (dbStatus.strength === 'Excellent' || dbStatus.strength === 'Good' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(245, 158, 11, 0.08)')
+                  : 'rgba(239, 68, 68, 0.08)',
+                border: `1px solid ${
+                  dbStatus.status === 'Connected'
+                    ? (dbStatus.strength === 'Excellent' || dbStatus.strength === 'Good' ? 'rgba(16, 185, 129, 0.25)' : 'rgba(245, 158, 11, 0.25)')
+                    : 'rgba(239, 68, 68, 0.25)'
+                }`,
+                color: dbStatus.status === 'Connected'
+                  ? (dbStatus.strength === 'Excellent' || dbStatus.strength === 'Good' ? 'var(--accent-success-hover)' : 'var(--accent-warning)')
+                  : 'var(--accent-danger)',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              title={
+                dbStatus.status === 'Connected'
+                  ? `Connected to ${dbStatus.server}\nLatency: ${dbStatus.latency}ms\nQuality: ${dbStatus.strength}`
+                  : `Database status: ${dbStatus.status}`
+              }
+            >
+              <span style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                backgroundColor: dbStatus.status === 'Connected'
+                  ? (dbStatus.strength === 'Excellent' || dbStatus.strength === 'Good' ? '#10b981' : '#f59e0b')
+                  : '#ef4444',
+                boxShadow: dbStatus.status === 'Connected'
+                  ? `0 0 6px ${dbStatus.strength === 'Excellent' || dbStatus.strength === 'Good' ? '#10b981' : '#f59e0b'}`
+                  : '0 0 6px #ef4444',
+                display: 'inline-block'
+              }} />
+              <span style={{ fontWeight: 650, fontSize: '0.72rem' }}>
+                {dbStatus.status === 'Connected' ? `DB: ${dbStatus.latency}ms` : 'DB Offline'}
+              </span>
+            </div>
+          </div>
+        )}
+
+        <div className="app-control-box" style={{ marginLeft: appState === 'CONNECTING' || appState === 'SETUP_WIZARD' ? 'auto' : '0px' }}>
           <button className="app-control-dot minimize" title="Minimize" onClick={() => window.electronAPI.invoke('win-minimize')} />
           <button className="app-control-dot maximize" title="Maximize" onClick={() => window.electronAPI.invoke('win-maximize')} />
           <button className="app-control-dot close" title="Close" onClick={handleExitApp} />

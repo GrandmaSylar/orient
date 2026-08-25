@@ -92,8 +92,8 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [postedTxData, setPostedTxData] = useState<any | null>(null);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [receiptSize, setReceiptSize] = useState<'A5' | 'A4' | 'A6' | '80mm' | '58mm'>('A5');
-  const [receiptOrientation, setReceiptOrientation] = useState<'portrait' | 'landscape'>('landscape');
+  const [receiptSize, setReceiptSize] = useState<'A5' | 'A4' | 'A6' | '80mm' | '58mm'>('A4');
+  const [receiptOrientation, setReceiptOrientation] = useState<'portrait' | 'landscape'>('portrait');
 
   const [orgConfig, setOrgConfig] = useState<any>({
     org_name: 'CO-OPERATIVE CREDIT UNION',
@@ -584,7 +584,7 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
             
             <table class="thermal-details">
               <tr><td style="width: 40%;">Receipt No:</td><td class="bold right">${data.receiptNo}</td></tr>
-              <tr><td>Date:</td><td class="right">${data.date}</td></tr>
+              <tr><td>Date:</td><td class="right bold">${data.date}</td></tr>
               <tr><td>Student ID:</td><td class="right">${data.studentId}</td></tr>
               <tr><td>Student Name:</td><td class="right bold">${data.studentName}</td></tr>
               <tr><td>Class:</td><td class="right">${data.studentClass}</td></tr>
@@ -847,7 +847,7 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
           
           <div class="amount-row">
             <span>Amount (Gh¢): Gh¢ ${data.amount.toFixed(2)}</span>
-            <span style="font-size: 8.5pt; font-weight: normal; color: #475569;">Date of Payment: ${data.date}</span>
+            <span style="font-size: 8.5pt; font-weight: bold; color: #0f172a;">Date of Payment: ${data.date}</span>
           </div>
           
           <table class="details-grid">
