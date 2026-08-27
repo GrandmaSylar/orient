@@ -49,7 +49,8 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
 
   // Preview Modal States
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [previewHtml, setPreviewHtml] = useState('');
+  const [reportFontSize, setReportFontSize] = useState<number>(9);
+  const [reportFontBold, setReportFontBold] = useState<boolean>(true);
 
   const [orgConfig, setOrgConfig] = useState<any>({
     org_name: 'CO-OPERATIVE CREDIT UNION',
@@ -176,8 +177,8 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
     };
   }, [filteredTransactions]);
 
-  const handlePrintReport = async () => {
-    if (txCount === 0) return;
+  const generateReportHtml = (fontSize: number, isBold: boolean) => {
+    if (txCount === 0) return '';
     
     // Parse term/academic details from first transaction
     const firstTx = rawTransactions[0];
@@ -226,11 +227,11 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
         classGroup.transactions.forEach((tx) => {
           tableSectionsHtml += `
             <tr>
-              <td>${globalIndex}</td>
-              <td style="font-family: monospace;">${tx.student_id_code}</td>
-              <td style="font-weight: 500;">${tx.student_name}</td>
-              <td style="text-align: right; font-weight: bold;">${tx.amount.toFixed(2)}</td>
-              <td style="text-align: right;">${tx.cashier_username}</td>
+              <td style="font-weight: 800;">${globalIndex}</td>
+              <td style="font-family: monospace; font-weight: 800;">${tx.student_id_code}</td>
+              <td style="font-weight: 800;">${tx.student_name}</td>
+              <td style="text-align: right; font-weight: 900;">${tx.amount.toFixed(2)}</td>
+              <td style="text-align: right; font-weight: 800;">${tx.cashier_username}</td>
             </tr>
           `;
           globalIndex++;
@@ -238,8 +239,8 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
 
         tableSectionsHtml += `
                 <tr class="subtotal-tr">
-                  <td colspan="3" style="text-align: right; border: none; font-weight: bold;"></td>
-                  <td style="text-align: right; font-weight: 800; border-top: 1.5px solid #000; border-bottom: 2px double #000; font-size: 10pt;">${classGroup.subtotal.toFixed(2)}</td>
+                  <td colspan="3" style="text-align: right; border: none; font-weight: 900; font-size: 10pt;">Subtotal (${classGroup.className}):</td>
+                  <td style="text-align: right; font-weight: 900; border-top: 2px solid #000; border-bottom: 3px double #000; font-size: 10.5pt;">${classGroup.subtotal.toFixed(2)}</td>
                   <td style="border: none;"></td>
                 </tr>
               </tbody>
@@ -253,7 +254,7 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
       `;
     });
 
-    const reportHtml = `
+    return `
       <!DOCTYPE html>
       <html>
       <head>
@@ -261,14 +262,27 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
         <style>
           @page {
             size: A4 portrait;
+            margin: 10mm;
+          }
+          *, *:before, *:after {
+            box-sizing: border-box;
+          }
+          :root {
+            --base-font-size: ${fontSize}pt;
+            --font-weight-normal: ${isBold ? '800' : '650'};
+            --font-weight-bold: ${isBold ? '900' : '700'};
+            --font-weight-heavy: ${isBold ? '900' : '800'};
+          }
+          html, body {
             margin: 0;
+            padding: 0;
+            width: 100%;
           }
           body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 15mm 15mm 15mm 15mm;
-            color: #0f172a;
-            font-size: 8.5pt;
+            color: #000;
+            font-size: var(--base-font-size);
+            font-weight: var(--font-weight-normal);
             background-color: white;
             position: relative;
             box-sizing: border-box;
@@ -280,7 +294,7 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
             transform: translate(-50%, -50%) rotate(-25deg);
             font-size: 45pt;
             font-weight: 900;
-            color: rgba(226, 232, 240, 0.35);
+            color: rgba(203, 213, 225, 0.25);
             z-index: -1;
             white-space: nowrap;
             pointer-events: none;
@@ -302,50 +316,54 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
           }
           .header-text h2 {
             margin: 0;
-            font-size: 12pt;
-            font-weight: 700;
-            color: #0f172a;
+            font-size: calc(var(--base-font-size) * 1.55);
+            font-weight: var(--font-weight-heavy);
+            color: #000;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
           }
           .header-text p {
             margin: 2px 0 0 0;
-            font-size: 8.5pt;
-            font-weight: 600;
-            color: #475569;
+            font-size: calc(var(--base-font-size) * 1.05);
+            font-weight: var(--font-weight-bold);
+            color: #000;
           }
           .divider {
-            border-top: 1.5px double #000;
-            margin: 4px 0;
+            border-top: 2px solid #000;
+            margin: 6px 0;
           }
           .report-title {
             text-align: center;
-            font-size: 10pt;
-            font-weight: 700;
-            margin: 4px 0 8px 0;
+            font-size: calc(var(--base-font-size) * 1.33);
+            font-weight: var(--font-weight-heavy);
+            margin: 6px 0 10px 0;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             text-decoration: underline;
+            color: #000;
           }
           .report-meta-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
           }
           .report-meta-table td {
-            padding: 2px 0;
-            font-size: 8.5pt;
+            padding: 3px 0;
+            font-size: calc(var(--base-font-size) * 1.05);
+            font-weight: var(--font-weight-bold);
+            color: #000;
           }
           .product-section {
-            margin-bottom: 16px;
+            margin-bottom: 18px;
           }
           .product-header {
-            font-size: 10.5pt;
-            font-weight: 700;
+            font-size: calc(var(--base-font-size) * 1.28);
+            font-weight: var(--font-weight-heavy);
             color: #000;
-            padding: 2px 0;
+            padding: 3px 0;
             margin-bottom: 8px;
             text-transform: uppercase;
-            border-bottom: 1px solid #000;
+            border-bottom: 2px solid #000;
             text-align: center;
           }
           .class-group-container {
@@ -353,8 +371,8 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
             page-break-inside: avoid;
           }
           .class-header {
-            font-size: 9.5pt;
-            font-weight: 700;
+            font-size: calc(var(--base-font-size) * 1.16);
+            font-weight: var(--font-weight-heavy);
             color: #000;
             margin: 8px 0 4px 0;
             text-align: center;
@@ -363,33 +381,34 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
           .report-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
           }
           .table-header-row th {
             color: #000;
-            font-weight: 700;
-            padding: 4px 6px;
-            border-top: 1px solid #000;
-            border-bottom: 1px solid #000;
+            font-weight: var(--font-weight-heavy);
+            padding: 5px 6px;
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
             text-align: left;
-            font-size: 8pt;
+            font-size: var(--base-font-size);
           }
           .report-table td {
             padding: 4px 6px;
-            border: 1px solid #e2e8f0;
-            color: #0f172a;
-            font-size: 8pt;
+            border: 1.5px solid #334155;
+            color: #000;
+            font-size: var(--base-font-size);
           }
           .subtotal-tr td {
-            padding: 2px 6px;
+            padding: 4px 6px;
           }
           .grand-total-box {
-            border-top: 1px solid #000;
-            border-bottom: 1.5px double #000;
-            padding: 8px 10px;
-            font-size: 10pt;
-            font-weight: 700;
-            margin-top: 16px;
+            border-top: 2px solid #000;
+            border-bottom: 3px double #000;
+            padding: 8px 12px;
+            font-size: calc(var(--base-font-size) * 1.33);
+            font-weight: var(--font-weight-heavy);
+            color: #000;
+            margin-top: 18px;
             margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
@@ -404,42 +423,46 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
           .sig-box {
             width: 200px;
             text-align: center;
-            font-size: 8pt;
-            font-weight: 600;
+            font-size: var(--base-font-size);
+            font-weight: var(--font-weight-bold);
+            color: #000;
           }
           .sig-line {
-            border-top: 1px solid #000;
+            border-top: 2px solid #000;
             margin-top: 30px;
             padding-top: 4px;
+            font-weight: var(--font-weight-heavy);
           }
           .stamp-box {
             width: 110px;
             height: 44px;
-            border: 1.8px dashed #dc2626;
+            border: 2px dashed #dc2626;
             border-radius: 4px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             color: #dc2626;
-            font-size: 8pt;
-            font-weight: 900;
+            font-size: var(--base-font-size);
+            font-weight: var(--font-weight-heavy);
             transform: rotate(-4deg);
             margin-bottom: -15px;
-            opacity: 0.85;
+            opacity: 0.9;
           }
           .footer-container {
-            position: fixed;
-            bottom: 15mm;
-            left: 15mm;
-            right: 15mm;
-            font-size: 7.5pt;
-            color: #94a3b8;
+            font-size: calc(var(--base-font-size) * 0.9);
+            font-weight: var(--font-weight-normal);
+            color: #475569;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 1px solid #f1f5f9;
+            border-top: 1.5px solid #cbd5e1;
             padding-top: 4px;
-            opacity: 0.85;
+            margin-top: 20px;
+          }
+          @media print {
+            body {
+              padding: 0 !important;
+            }
           }
         </style>
       </head>
@@ -450,7 +473,7 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
           <tr>
             <td class="header-logo">
               ${orgConfig.logo_url ? `<img src="${orgConfig.logo_url}" style="max-height: 55px; max-width: 70px; object-fit: contain;" />` : `
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width: 48px; height: 48px; color: #000;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 48px; height: 48px; color: #000;">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                   <path d="M2 12h20M12 2v20" />
@@ -460,7 +483,7 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
             <td class="header-text">
               <h2>${orgConfig.org_name}</h2>
               <p>${orgConfig.location}</p>
-              <p style="font-size: 8pt; font-weight: normal; margin-top: 1px;">${orgConfig.telephone}</p>
+              <p style="font-size: calc(var(--base-font-size) * 1.05); font-weight: 700; margin-top: 1px;">${orgConfig.telephone}</p>
             </td>
           </tr>
         </table>
@@ -471,14 +494,14 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
         
         <table class="report-meta-table">
           <tr>
-            <td style="font-weight: bold; width: 15%;">Academic Year:</td>
-            <td style="width: 35%; border-bottom: 1px dotted #94a3b8;">${academicYear}</td>
-            <td style="font-weight: bold; width: 10%; text-align: right; padding-right: 10px;">Date:</td>
-            <td style="border-bottom: 1px dotted #94a3b8;">${formattedDate}</td>
+            <td style="font-weight: 900; width: 15%;">Academic Year:</td>
+            <td style="width: 35%; border-bottom: 1.5px solid #000;">${academicYear}</td>
+            <td style="font-weight: 900; width: 10%; text-align: right; padding-right: 10px;">Date:</td>
+            <td style="border-bottom: 1.5px solid #000;">${formattedDate}</td>
           </tr>
           <tr>
-            <td style="font-weight: bold;">Term:</td>
-            <td style="border-bottom: 1px dotted #94a3b8; text-transform: uppercase;">${termName}</td>
+            <td style="font-weight: 900;">Term:</td>
+            <td style="border-bottom: 1.5px solid #000; text-transform: uppercase;">${termName}</td>
             <td colspan="2"></td>
           </tr>
         </table>
@@ -509,8 +532,10 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
       </body>
       </html>
     `;
+  };
 
-    setPreviewHtml(reportHtml);
+  const handlePrintReport = async () => {
+    if (txCount === 0) return;
     setShowPreviewModal(true);
   };
 
@@ -747,19 +772,68 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
       </div>
 
       {/* REPORT PREVIEW MODAL */}
-      {showPreviewModal && previewHtml && (
+      {showPreviewModal && (
         <div className="modal-overlay" style={{ zIndex: 10300 }}>
-          <div className="modal-content animate-scale-in" style={{ maxWidth: '640px', width: '90%', padding: '20px' }}>
+          <div className="modal-content animate-scale-in" style={{ maxWidth: '720px', width: '90%', padding: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
               <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>Daily Report Preview (A4 Portrait)</h3>
               <button className="btn btn-secondary" onClick={() => setShowPreviewModal(false)} style={{ padding: '4px 8px' }}>✕</button>
+            </div>
+
+            {/* Font Styling Controls */}
+            <div style={{ 
+              display: 'flex', 
+              gap: '16px', 
+              marginBottom: '16px', 
+              padding: '12px', 
+              backgroundColor: '#f8fafc', 
+              borderRadius: 'var(--radius-sm)', 
+              border: '1px solid var(--border-color)',
+              alignItems: 'center',
+              flexWrap: 'wrap'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Font Size (pt):</span>
+                <input
+                  type="range"
+                  min="7"
+                  max="15"
+                  value={reportFontSize}
+                  onChange={(e) => setReportFontSize(parseInt(e.target.value))}
+                  style={{ width: '120px', cursor: 'pointer' }}
+                />
+                <input
+                  type="number"
+                  min="7"
+                  max="15"
+                  value={reportFontSize}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    if (!isNaN(val)) setReportFontSize(Math.min(15, Math.max(7, val)));
+                  }}
+                  className="form-control"
+                  style={{ width: '55px', padding: '4px 6px', textAlign: 'center', height: '30px', display: 'inline-block' }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', borderLeft: '1px solid #cbd5e1', paddingLeft: '16px' }}>
+                <input
+                  type="checkbox"
+                  id="report-bold-toggle"
+                  checked={reportFontBold}
+                  onChange={(e) => setReportFontBold(e.target.checked)}
+                  style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                />
+                <label htmlFor="report-bold-toggle" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', cursor: 'pointer', margin: 0 }}>
+                  Bold Text
+                </label>
+              </div>
             </div>
 
             {/* A4 page scaled to fit preview window with scroll */}
             <div style={{ 
               border: '1px solid var(--border-color)', 
               borderRadius: 'var(--radius-sm)', 
-              overflow: 'hidden', 
               backgroundColor: '#f1f5f9',
               display: 'flex',
               justifyContent: 'center',
@@ -769,16 +843,16 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
             }}>
               <iframe
                 title="Daily Report Preview"
-                srcDoc={previewHtml}
+                srcDoc={generateReportHtml(reportFontSize, reportFontBold)}
                 style={{
                   width: '210mm',
                   height: '297mm',
                   border: 'none',
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                   backgroundColor: 'white',
-                  transform: 'scale(0.68)',
+                  transform: 'scale(0.72)',
                   transformOrigin: 'top center',
-                  marginBottom: '-95mm' // Offset bottom space due to scaling shrink
+                  marginBottom: '-83mm' // Offset bottom space due to scaling shrink
                 }}
               />
             </div>
@@ -793,7 +867,8 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
               <button 
                 className="btn btn-primary" 
                 onClick={async () => {
-                  await window.electronAPI.invoke('print-receipt', previewHtml, { pageSize: 'A4' });
+                  const printHtml = generateReportHtml(reportFontSize, reportFontBold);
+                  await window.electronAPI.invoke('print-receipt', printHtml, { pageSize: 'A4' });
                 }}
                 style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}
               >

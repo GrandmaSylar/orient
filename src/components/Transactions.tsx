@@ -94,6 +94,8 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [receiptSize, setReceiptSize] = useState<'A5' | 'A4' | 'A6' | '80mm' | '58mm'>('A4');
   const [receiptOrientation, setReceiptOrientation] = useState<'portrait' | 'landscape'>('portrait');
+  const [receiptFontSize, setReceiptFontSize] = useState<number>(10);
+  const [receiptFontBold, setReceiptFontBold] = useState<boolean>(true);
 
   const [orgConfig, setOrgConfig] = useState<any>({
     org_name: 'CO-OPERATIVE CREDIT UNION',
@@ -395,46 +397,52 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
     return txDate === today && tx.username === user.username;
   };
 
-  const generateReceiptHtml = (data: any, pageSize = 'A5', orientation = 'landscape') => {
+  const generateReceiptHtml = (data: any, pageSize = 'A4', orientation = 'portrait', customFontSize = 10, isBold = true) => {
     const isThermal = pageSize === '80mm' || pageSize === '58mm';
     
-    let sizeStyle = 'A5 landscape';
-    let bodyDimensions = 'width: 210mm; height: 148mm; padding: 6mm;';
+    let sizeStyle = 'A4 portrait';
+    let maxBoxWidth = '185mm';
+    let bodyPadding = '12mm 15mm';
     
-    if (pageSize === 'A5') {
-      if (orientation === 'landscape') {
-        sizeStyle = 'A5 landscape';
-        bodyDimensions = 'width: 210mm; height: 148mm; padding: 6mm;';
-      } else {
-        sizeStyle = 'A5 portrait';
-        bodyDimensions = 'width: 148mm; height: 210mm; padding: 6mm;';
-      }
-    } else if (pageSize === 'A4') {
+    if (pageSize === 'A4') {
       if (orientation === 'landscape') {
         sizeStyle = 'A4 landscape';
-        bodyDimensions = 'width: 297mm; height: 210mm; padding: 10mm;';
+        maxBoxWidth = '260mm';
+        bodyPadding = '12mm 15mm';
       } else {
         sizeStyle = 'A4 portrait';
-        bodyDimensions = 'width: 210mm; height: 297mm; padding: 10mm;';
+        maxBoxWidth = '185mm';
+        bodyPadding = '12mm 15mm';
+      }
+    } else if (pageSize === 'A5') {
+      if (orientation === 'landscape') {
+        sizeStyle = 'A5 landscape';
+        maxBoxWidth = '185mm';
+        bodyPadding = '8mm 10mm';
+      } else {
+        sizeStyle = 'A5 portrait';
+        maxBoxWidth = '130mm';
+        bodyPadding = '8mm 10mm';
       }
     } else if (pageSize === 'A6') {
       if (orientation === 'landscape') {
         sizeStyle = 'A6 landscape';
-        bodyDimensions = 'width: 148mm; height: 105mm; padding: 4mm;';
+        maxBoxWidth = '135mm';
+        bodyPadding = '4mm 6mm';
       } else {
         sizeStyle = 'A6 portrait';
-        bodyDimensions = 'width: 105mm; height: 148mm; padding: 4mm;';
+        maxBoxWidth = '95mm';
+        bodyPadding = '4mm 6mm';
       }
     } else if (pageSize === '80mm') {
       sizeStyle = '80mm 200mm';
-      bodyDimensions = 'width: 80mm; padding: 4mm;';
     } else if (pageSize === '58mm') {
       sizeStyle = '58mm 180mm';
-      bodyDimensions = 'width: 58mm; padding: 2mm;';
     }
 
     if (isThermal) {
       const thermalClass = pageSize === '80mm' ? 'thermal-80' : 'thermal-58';
+      const maxThermalWidth = pageSize === '80mm' ? '74mm' : '52mm';
       return `
         <!DOCTYPE html>
         <html>
@@ -445,16 +453,36 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
               size: ${sizeStyle};
               margin: 0;
             }
+            *, *:before, *:after {
+              box-sizing: border-box;
+            }
+            :root {
+              --base-font-size: ${customFontSize}pt;
+              --font-weight-normal: ${isBold ? '800' : '500'};
+              --font-weight-bold: ${isBold ? '900' : '700'};
+              --font-weight-heavy: ${isBold ? '900' : '900'};
+            }
+            html, body {
+              margin: 0;
+              padding: 0;
+              width: 100%;
+            }
             body {
               font-family: 'Courier New', Courier, monospace;
-              margin: 0;
-              ${bodyDimensions}
+              margin: 0 auto;
               color: #000;
+              font-size: calc(var(--base-font-size) * 0.9);
+              font-weight: var(--font-weight-normal);
               background-color: #fff;
               box-sizing: border-box;
+              display: flex;
+              justify-content: center;
+              padding: 4mm 2mm;
             }
             .thermal-container {
               width: 100%;
+              max-width: ${maxThermalWidth};
+              margin: 0 auto;
               box-sizing: border-box;
             }
             .header-logo-centered {
@@ -466,30 +494,34 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
               margin-bottom: 8px;
             }
             .thermal-header-text h2 {
-              font-size: 10.5pt;
-              font-weight: bold;
+              font-size: calc(var(--base-font-size) * 1.1);
+              font-weight: var(--font-weight-heavy);
               margin: 0;
+              color: #000;
               text-transform: uppercase;
             }
             .thermal-header-text p {
-              font-size: 8pt;
+              font-size: calc(var(--base-font-size) * 0.85);
               margin: 2px 0 0 0;
-              font-weight: bold;
+              font-weight: var(--font-weight-bold);
+              color: #000;
             }
             .thermal-divider {
-              border-top: 1px dashed #000;
+              border-top: 1.5px dashed #000;
               margin: 6px 0;
             }
             .thermal-title {
               text-align: center;
-              font-weight: bold;
-              font-size: 9.5pt;
+              font-weight: var(--font-weight-heavy);
+              font-size: var(--base-font-size);
+              color: #000;
               text-transform: uppercase;
             }
             .thermal-title-sub {
               text-align: center;
-              font-size: 8.5pt;
-              font-weight: bold;
+              font-size: calc(var(--base-font-size) * 0.9);
+              font-weight: var(--font-weight-heavy);
+              color: #000;
               margin-top: 2px;
             }
             .thermal-details {
@@ -499,69 +531,82 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
             }
             .thermal-details td {
               padding: 2.5px 0;
-              font-size: 8.5pt;
+              font-size: calc(var(--base-font-size) * 0.9);
+              font-weight: var(--font-weight-normal);
+              color: #000;
               vertical-align: top;
             }
             .thermal-58 .thermal-details td {
-              font-size: 7.5pt;
+              font-size: calc(var(--base-font-size) * 0.8);
             }
             .right {
               text-align: right;
             }
             .bold {
-              font-weight: bold;
+              font-weight: var(--font-weight-heavy);
             }
             .thermal-amount-container {
               text-align: center;
               padding: 8px 0;
               margin: 6px 0;
-              border: 1px solid #000;
+              border: 2px solid #000;
             }
             .thermal-amount-label {
-              font-size: 8pt;
-              font-weight: bold;
+              font-size: calc(var(--base-font-size) * 0.85);
+              font-weight: var(--font-weight-bold);
+              color: #000;
             }
             .thermal-amount-value {
-              font-size: 13pt;
-              font-weight: bold;
+              font-size: calc(var(--base-font-size) * 1.3);
+              font-weight: var(--font-weight-heavy);
+              color: #000;
               margin-top: 2px;
             }
             .thermal-58 .thermal-amount-value {
-              font-size: 11pt;
+              font-size: calc(var(--base-font-size) * 1.15);
             }
             .thermal-words {
-              font-size: 8pt;
+              font-size: calc(var(--base-font-size) * 0.85);
               text-transform: uppercase;
               text-align: center;
-              font-style: italic;
+              font-weight: var(--font-weight-bold);
+              color: #000;
               margin: 6px 0;
               line-height: 1.3;
             }
             .thermal-signature-section {
-              margin-top: 30px;
+              margin-top: 26px;
               text-align: center;
             }
             .thermal-sig-line {
-              border-top: 1px solid #000;
-              width: 130px;
+              border-top: 1.5px solid #000;
+              width: 140px;
               margin: 0 auto;
               padding-top: 4px;
-              font-size: 8pt;
-              font-weight: bold;
+              font-size: calc(var(--base-font-size) * 0.85);
+              font-weight: var(--font-weight-bold);
+              color: #000;
             }
             .thermal-footer {
               text-align: center;
-              font-size: 7.5pt;
-              margin-top: 20px;
+              font-size: calc(var(--base-font-size) * 0.8);
+              font-weight: var(--font-weight-normal);
+              color: #000;
+              margin-top: 18px;
               line-height: 1.4;
+            }
+            @media print {
+              body {
+                padding: 2mm !important;
+              }
             }
           </style>
         </head>
         <body>
           <div class="thermal-container ${thermalClass}">
             <div class="header-logo-centered">
-              ${orgConfig.logo_url ? `<img src="${orgConfig.logo_url}" style="max-height: 48px; max-width: 58px; object-fit: contain;" />` : `
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width: 32px; height: 32px; color: #000;">
+              ${orgConfig.logo_url ? `<img src="${orgConfig.logo_url}" style="max-height: 50px; max-width: 60px; object-fit: contain;" />` : `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 34px; height: 34px; color: #000;">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                   <path d="M2 12h20M12 2v20" />
@@ -583,14 +628,14 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
             <div class="thermal-divider"></div>
             
             <table class="thermal-details">
-              <tr><td style="width: 40%;">Receipt No:</td><td class="bold right">${data.receiptNo}</td></tr>
-              <tr><td>Date:</td><td class="right bold">${data.date}</td></tr>
-              <tr><td>Student ID:</td><td class="right">${data.studentId}</td></tr>
-              <tr><td>Student Name:</td><td class="right bold">${data.studentName}</td></tr>
-              <tr><td>Class:</td><td class="right">${data.studentClass}</td></tr>
-              <tr><td>Term:</td><td class="right">${data.termName}</td></tr>
-              <tr><td>Academic Year:</td><td class="right">${data.year}</td></tr>
-              <tr><td>Paid By:</td><td class="right">${data.paidBy}</td></tr>
+              <tr><td style="width: 40%; font-weight: var(--font-weight-bold);">Receipt No:</td><td class="bold right">${data.receiptNo}</td></tr>
+              <tr><td style="font-weight: var(--font-weight-bold);">Date:</td><td class="right bold">${data.date}</td></tr>
+              <tr><td style="font-weight: var(--font-weight-bold);">Student ID:</td><td class="right bold">${data.studentId}</td></tr>
+              <tr><td style="font-weight: var(--font-weight-bold);">Student Name:</td><td class="right bold">${data.studentName}</td></tr>
+              <tr><td style="font-weight: var(--font-weight-bold);">Class:</td><td class="right bold">${data.studentClass}</td></tr>
+              <tr><td style="font-weight: var(--font-weight-bold);">Term:</td><td class="right bold">${data.termName}</td></tr>
+              <tr><td style="font-weight: var(--font-weight-bold);">Academic Year:</td><td class="right bold">${data.year}</td></tr>
+              <tr><td style="font-weight: var(--font-weight-bold);">Paid By:</td><td class="right bold">${data.paidBy}</td></tr>
             </table>
             
             <div class="thermal-divider"></div>
@@ -605,8 +650,8 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
             <div class="thermal-divider"></div>
             
             <table class="thermal-details">
-              <tr><td style="width: 45%;">Guardian Number:</td><td class="right">${data.guardianPhone || 'N/A'}</td></tr>
-              <tr><td>Received By:</td><td class="right">${data.receivedBy}</td></tr>
+              <tr><td style="width: 45%; font-weight: var(--font-weight-bold);">Guardian Number:</td><td class="right bold">${data.guardianPhone || 'N/A'}</td></tr>
+              <tr><td style="font-weight: var(--font-weight-bold);">Received By:</td><td class="right bold">${data.receivedBy}</td></tr>
             </table>
             
             <div class="thermal-divider"></div>
@@ -625,7 +670,7 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
       `;
     }
 
-    // Standard Layout (A5 / A4)
+    // Standard Layout (A5 / A4 / A6)
     return `
       <!DOCTYPE html>
       <html>
@@ -636,24 +681,48 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
             size: ${sizeStyle};
             margin: 0;
           }
+          *, *:before, *:after {
+            box-sizing: border-box;
+          }
+          :root {
+            --base-font-size: ${customFontSize}pt;
+            --font-weight-normal: ${isBold ? '800' : '500'};
+            --font-weight-bold: ${isBold ? '900' : '700'};
+            --font-weight-heavy: ${isBold ? '900' : '900'};
+          }
+          html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+          }
           body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            ${bodyDimensions}
-            color: #1e293b;
-            font-size: 10pt;
+            margin: 0 auto;
+            padding: ${bodyPadding};
+            color: #000;
+            font-size: var(--base-font-size);
+            font-weight: var(--font-weight-normal);
             box-sizing: border-box;
             background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
           }
           .receipt-box {
-            border: 2px solid #0f172a;
-            padding: 12px;
-            height: 100%;
+            border: 2.5px solid #000;
+            border-radius: 4px;
+            padding: 14px 18px;
+            width: 100%;
+            max-width: ${maxBoxWidth};
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             box-sizing: border-box;
-            background: radial-gradient(circle, rgba(248,250,252,0.6) 0%, rgba(255,255,255,1) 100%);
+            background: #ffffff;
             position: relative;
           }
           .watermark {
@@ -661,9 +730,9 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
             top: 55%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-15deg);
-            font-size: 38pt;
+            font-size: 36pt;
             font-weight: 900;
-            color: rgba(226, 232, 240, 0.4);
+            color: rgba(148, 163, 184, 0.22);
             z-index: 0;
             white-space: nowrap;
             pointer-events: none;
@@ -687,32 +756,32 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
           }
           .header-text h2 {
             margin: 0;
-            font-size: 13pt;
-            font-weight: 800;
-            color: #0f172a;
+            font-size: calc(var(--base-font-size) * 1.4);
+            font-weight: var(--font-weight-heavy);
+            color: #000;
             letter-spacing: 0.5px;
             text-transform: uppercase;
           }
           .header-text p {
             margin: 2px 0 0 0;
-            font-size: 9pt;
-            font-weight: 600;
-            color: #475569;
+            font-size: calc(var(--base-font-size) * 0.95);
+            font-weight: var(--font-weight-bold);
+            color: #000;
           }
           .divider {
-            border-top: 2px solid #0f172a;
+            border-top: 2px solid #000;
             margin: 4px 0;
             z-index: 1;
             position: relative;
           }
           .receipt-title {
             text-align: center;
-            font-size: 11pt;
-            font-weight: 800;
+            font-size: calc(var(--base-font-size) * 1.2);
+            font-weight: var(--font-weight-heavy);
             margin: 4px 0 6px 0;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #0f172a;
+            color: #000;
             text-decoration: underline;
             z-index: 1;
             position: relative;
@@ -727,28 +796,31 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
           .details-grid td {
             padding: 4px 6px;
             vertical-align: middle;
-            font-size: 9.5pt;
+            font-size: var(--base-font-size);
+            color: #000;
+            font-weight: var(--font-weight-normal);
           }
           .label {
-            font-weight: bold;
-            color: #334155;
-            width: 15%;
+            font-weight: var(--font-weight-bold);
+            color: #000;
+            width: 16%;
           }
           .value {
-            border-bottom: 1.5px solid #0f172a;
-            color: #0f172a;
-            font-weight: 700;
+            border-bottom: 2px solid #000;
+            color: #000;
+            font-weight: var(--font-weight-bold);
           }
           .amount-row {
             background-color: #f8fafc;
-            border: 1.5px solid #0f172a;
+            border: 2px solid #000;
             padding: 6px 10px;
             margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 11pt;
-            font-weight: bold;
+            font-size: calc(var(--base-font-size) * 1.2);
+            font-weight: var(--font-weight-heavy);
+            color: #000;
             z-index: 1;
             position: relative;
           }
@@ -756,7 +828,7 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-top: 16px;
+            margin-top: 14px;
             padding-top: 4px;
             z-index: 1;
             position: relative;
@@ -764,38 +836,65 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
           .sig-box {
             width: 180px;
             text-align: center;
-            font-size: 8.5pt;
+            font-size: calc(var(--base-font-size) * 0.9);
+            font-weight: var(--font-weight-bold);
+            color: #000;
           }
           .sig-line {
-            border-top: 1.5px solid #0f172a;
-            margin-top: 22px;
+            border-top: 2px solid #000;
+            margin-top: 20px;
             padding-top: 4px;
+            font-weight: var(--font-weight-bold);
           }
           .stamp-box {
             width: 120px;
-            height: 48px;
+            height: 46px;
             border: 2px dashed #0284c7;
             border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #0284c7;
-            font-size: 8.5pt;
-            font-weight: 800;
+            font-size: calc(var(--base-font-size) * 0.9);
+            font-weight: var(--font-weight-heavy);
             transform: rotate(-5deg);
-            opacity: 0.8;
+            opacity: 0.85;
           }
           .footer {
-            font-size: 8pt;
-            color: #64748b;
+            font-size: calc(var(--base-font-size) * 0.85);
+            color: #334155;
+            font-weight: var(--font-weight-bold);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 1px dashed #e2e8f0;
+            border-top: 1.5px dashed #cbd5e1;
             padding-top: 4px;
-            margin-top: 12px;
+            margin-top: 10px;
             z-index: 1;
             position: relative;
+          }
+          @media print {
+            @page {
+              size: ${sizeStyle};
+              margin: 0;
+            }
+            html, body {
+              width: 100% !important;
+              height: 100% !important;
+              margin: 0 auto !important;
+              padding: 0 !important;
+              display: flex !important;
+              align-items: center !important;
+              justify-content: flex-start !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            body {
+              padding: ${bodyPadding} !important;
+            }
+            .receipt-box {
+              margin: 0 auto !important;
+            }
           }
         </style>
       </head>
@@ -807,7 +906,7 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
             <tr>
               <td class="header-logo">
                 ${orgConfig.logo_url ? `<img src="${orgConfig.logo_url}" style="max-height: 52px; max-width: 62px; object-fit: contain;" />` : `
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width: 44px; height: 44px; color: #0f172a;">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 44px; height: 44px; color: #000;">
                     <circle cx="12" cy="12" r="10" />
                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                     <path d="M2 12h20M12 2v20" />
@@ -817,7 +916,7 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
               <td class="header-text">
                 <h2>${orgConfig.org_name}</h2>
                 <p>${orgConfig.location}</p>
-                <p style="font-size: 8pt; font-weight: normal; margin-top: 1px;">${orgConfig.telephone}</p>
+                <p style="font-size: calc(var(--base-font-size) * 0.9); font-weight: var(--font-weight-bold); margin-top: 1px;">${orgConfig.telephone}</p>
               </td>
             </tr>
           </table>
@@ -847,7 +946,7 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
           
           <div class="amount-row">
             <span>Amount (Gh¢): Gh¢ ${data.amount.toFixed(2)}</span>
-            <span style="font-size: 8.5pt; font-weight: bold; color: #0f172a;">Date of Payment: ${data.date}</span>
+            <span style="font-size: calc(var(--base-font-size) * 0.95); font-weight: var(--font-weight-heavy); color: #000;">Date of Payment: ${data.date}</span>
           </div>
           
           <table class="details-grid">
@@ -870,7 +969,7 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
             
             <div style="display: flex; gap: 24px;">
               <div class="sig-box">
-                <p style="margin: 0; font-weight: bold; border-bottom: 1px dotted #94a3b8; height: 18px;">${data.receivedBy}</p>
+                <p style="margin: 0; font-weight: var(--font-weight-heavy); border-bottom: 1.5px dotted #000; height: 18px;">${data.receivedBy}</p>
                 <div class="sig-line" style="margin-top: 6px;">Received By</div>
               </div>
               <div class="sig-box">
@@ -1435,7 +1534,7 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
       {/* RECEIPT PREVIEW MODAL */}
       {showPreviewModal && postedTxData && (
         <div className="modal-overlay" style={{ zIndex: 10300 }}>
-          <div className="modal-content animate-scale-in" style={{ maxWidth: '860px', width: '95%', padding: '20px' }}>
+          <div className="modal-content animate-scale-in" style={{ maxWidth: '920px', width: '95%', padding: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
               <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>
                 Receipt Preview ({receiptSize} {receiptSize !== '80mm' && receiptSize !== '58mm' ? receiptOrientation.charAt(0).toUpperCase() + receiptOrientation.slice(1) : ''})
@@ -1443,7 +1542,7 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
               <button className="btn btn-secondary" onClick={() => setShowPreviewModal(false)} style={{ padding: '4px 8px' }}>✕</button>
             </div>
 
-            {/* Sizing & Orientation Selectors */}
+            {/* Sizing, Orientation & Font Controls */}
             <div style={{ 
               display: 'flex', 
               gap: '16px', 
@@ -1467,10 +1566,10 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
                     }
                   }}
                   className="form-control"
-                  style={{ width: '160px', display: 'inline-block', padding: '6px 10px', height: 'auto' }}
+                  style={{ width: '150px', display: 'inline-block', padding: '6px 10px', height: 'auto' }}
                 >
-                  <option value="A5">A5 (Standard)</option>
                   <option value="A4">A4 (Full Page)</option>
+                  <option value="A5">A5 (Standard)</option>
                   <option value="A6">A6</option>
                   <option value="80mm">Thermal 80mm</option>
                   <option value="58mm">Thermal 58mm</option>
@@ -1484,30 +1583,67 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
                     value={receiptOrientation}
                     onChange={(e) => setReceiptOrientation(e.target.value as any)}
                     className="form-control"
-                    style={{ width: '130px', display: 'inline-block', padding: '6px 10px', height: 'auto' }}
+                    style={{ width: '120px', display: 'inline-block', padding: '6px 10px', height: 'auto' }}
                   >
-                    <option value="landscape">Landscape</option>
                     <option value="portrait">Portrait</option>
+                    <option value="landscape">Landscape</option>
                   </select>
                 </div>
               )}
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderLeft: '1px solid #cbd5e1', paddingLeft: '16px' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Font Size (pt):</span>
+                <input
+                  type="range"
+                  min="8"
+                  max="18"
+                  value={receiptFontSize}
+                  onChange={(e) => setReceiptFontSize(parseInt(e.target.value))}
+                  style={{ width: '100px', cursor: 'pointer' }}
+                />
+                <input
+                  type="number"
+                  min="8"
+                  max="18"
+                  value={receiptFontSize}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    if (!isNaN(val)) setReceiptFontSize(Math.min(18, Math.max(8, val)));
+                  }}
+                  className="form-control"
+                  style={{ width: '55px', padding: '4px 6px', textAlign: 'center', height: '30px', display: 'inline-block' }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', borderLeft: '1px solid #cbd5e1', paddingLeft: '16px' }}>
+                <input
+                  type="checkbox"
+                  id="receipt-bold-toggle"
+                  checked={receiptFontBold}
+                  onChange={(e) => setReceiptFontBold(e.target.checked)}
+                  style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                />
+                <label htmlFor="receipt-bold-toggle" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', cursor: 'pointer', margin: 0 }}>
+                  Bold Text
+                </label>
+              </div>
             </div>
 
-            {/* Receipt iframe preview scaled to fit panel */}
+            {/* Receipt iframe preview scaled & centered */}
             <div style={{ 
               border: '1px solid var(--border-color)', 
               borderRadius: 'var(--radius-sm)', 
-              overflow: 'hidden', 
-              backgroundColor: '#f1f5f9',
+              backgroundColor: '#e2e8f0',
               display: 'flex',
               justifyContent: 'center',
-              padding: '24px 0',
-              maxHeight: '60vh',
-              overflowY: 'auto'
+              alignItems: 'flex-start',
+              padding: '24px 16px',
+              maxHeight: '65vh',
+              overflow: 'auto'
             }}>
               <iframe
                 title="Receipt Preview"
-                srcDoc={generateReceiptHtml(postedTxData, receiptSize, receiptOrientation)}
+                srcDoc={generateReceiptHtml(postedTxData, receiptSize, receiptOrientation, receiptFontSize, receiptFontBold)}
                 style={{
                   width: receiptSize === 'A5' 
                     ? (receiptOrientation === 'landscape' ? '210mm' : '148mm')
@@ -1525,11 +1661,15 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
                     : receiptSize === 'A6'
                     ? (receiptOrientation === 'landscape' ? '105mm' : '148mm')
                     : receiptSize === '80mm'
-                    ? '160mm'
-                    : '140mm',
-                  border: 'none',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                  backgroundColor: 'white'
+                    ? '180mm'
+                    : '150mm',
+                  maxWidth: '100%',
+                  border: '1px solid #cbd5e1',
+                  borderRadius: '4px',
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+                  backgroundColor: 'white',
+                  display: 'block',
+                  margin: '0 auto'
                 }}
               />
             </div>
@@ -1544,7 +1684,7 @@ export const Transactions: React.FC<TransactionsProps> = ({ user, showDialog }) 
               <button 
                 className="btn btn-primary" 
                 onClick={async () => {
-                  const printHtml = generateReceiptHtml(postedTxData, receiptSize, receiptOrientation);
+                  const printHtml = generateReceiptHtml(postedTxData, receiptSize, receiptOrientation, receiptFontSize, receiptFontBold);
                   await window.electronAPI.invoke('print-receipt', printHtml, {
                     pageSize: receiptSize,
                     landscape: receiptOrientation === 'landscape'
