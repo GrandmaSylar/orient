@@ -1,11 +1,11 @@
 # Complete Project Portfolio - GrandmaSylar
 
-## 🎯 Overview
+## Overview
 Full-stack developer with expertise in web applications, desktop tools, mobile apps, and management systems. 17 repositories showcasing diverse technical skills and real-world problem-solving.
 
 ---
 
-## 📱 MOBILE APPLICATIONS
+## MOBILE APPLICATIONS
 
 ### ManduuApp
 **Status:** Live | **Type:** React Native + Expo | **Visibility:** Private
@@ -16,7 +16,7 @@ Full-stack developer with expertise in web applications, desktop tools, mobile a
 
 ---
 
-## 🌐 WEB APPLICATIONS
+## WEB APPLICATIONS
 
 ### Concord
 **Status:** Live (https://concord-dun.vercel.app) | **Type:** Next.js Web App | **Visibility:** Public
@@ -25,7 +25,7 @@ Full-stack developer with expertise in web applications, desktop tools, mobile a
 - Tech: Next.js 16, React 19, Google AI, Supabase, Zod, Framer Motion
 
 ### PhiNova
-**Status:** Live (https://phi-nova.vercel.app) | **Type:** Next.js + CMS | **Visibility:** Public
+**Status:** Live (https://phinova.dev) | **Type:** Next.js + CMS | **Visibility:** Public
 - Content-rich website with headless CMS
 - Features: Sanity CMS integration, email notifications, dynamic content
 - Tech: Next.js 16, Sanity CMS, Resend, Tailwind CSS, Phosphor Icons
@@ -49,21 +49,15 @@ Full-stack developer with expertise in web applications, desktop tools, mobile a
 - Tech: React 18, TypeScript, Tailwind CSS, Supabase, Hono Edge Functions
 - Deliverables: 14 documentation files, 35+ project files, complete API
 
-### Concord (Website Design)
-**Status:** Development | **Type:** React Design System | **Visibility:** Private
-- Comprehensive website content and design project
-- Features: Radix UI components, Material Design, drag-drop, Recharts visualization
-- Tech: React 18, Vite, Tailwind CSS, Radix UI, Material-UI, React DnD
-
 ### escobar
-**Status:** Development | **Type:** React Web App | **Visibility:** Private
+**Status:** Live (https://prezz.vercel.app/) | **Type:** React Web App | **Visibility:** Private
 - Website content and design brief implementation
 - Features: Design system, UI component library, responsive layouts
 - Tech: React 18, TypeScript, Tailwind CSS, Radix UI, Recharts
 
 ---
 
-## 💻 DESKTOP APPLICATIONS
+## DESKTOP APPLICATIONS
 
 ### Invitro LIMS
 **Status:** Live (https://invitro-iota.vercel.app) | **Type:** Electron + React Desktop | **Visibility:** Public
@@ -88,7 +82,7 @@ Full-stack developer with expertise in web applications, desktop tools, mobile a
 
 ---
 
-## 🏢 MANAGEMENT SYSTEMS
+## MANAGEMENT SYSTEMS
 
 ### Church Management System (MVP)
 **Status:** Production-Ready | **Type:** Full-Stack Management System | **Visibility:** Private
@@ -96,50 +90,22 @@ Full-stack developer with expertise in web applications, desktop tools, mobile a
 - Features: Member management, attendance tracking, visitor management, giving/tithes recording, role-based access control, temporary permissions, zone management, reports & analytics
 - Tech: React 18, TypeScript, Tailwind CSS, Node.js, Express, MongoDB, JWT authentication
 - Components: Dashboard, 9 database schemas, 20+ API endpoints, audit logging
-
-### COCM-v2
-**Status:** Production-Ready | **Type:** Enhanced Church Management System | **Visibility:** Private
-- Advanced church management with automatic status tracking
-- Features: Member profiles with family relations, bulk/individual attendance, visitor conversion, multi-zone support, comprehensive reports, role hierarchy (Dev/Admin/Pastor/Elder/Moderator)
-- Tech: React 18 + Material-UI, Node.js + Express, MongoDB, JWT, Zustand
-- Database: 9 collections, automatic member status calculation, zone-based access
-
-### COCM
-**Status:** Complete | **Type:** Church Database System | **Visibility:** Private
-- Church database management for member records
-- Tech: React, TypeScript, Church-specific data models
-
-### Activee
-**Status:** Complete | **Type:** Complaint Management System | **Visibility:** Private
-- Institutional complaint filing and management platform
-- Features: Complaint submission, tracking, resolution workflow
-- Purpose: Help institutions manage and resolve complaints efficiently
-
-### Vector2
-**Status:** Production-Ready | **Type:** DVLA Complaint System | **Visibility:** Private
-- Internal IT complaint management for government agency
-- Features: Staff complaint submission, admin dashboard, file attachments, email notifications, role-based access (Admin/Staff)
-- Tech: Next.js + Tailwind CSS, Node.js + Express, Supabase (PostgreSQL + Storage), JWT, Nodemailer, Multer
-
+  
 ---
 
-## 🎛️ UTILITY & LAB SYSTEMS
+## UTILITY & LAB SYSTEMS
 
-### GoonCORP
-**Status:** Live | **Type:** Lab Dashboard | **Visibility:** Public
-- Laboratory test center operations dashboard
-- Features: Test management, workflow tracking, operational analytics
-- Tech: React, TypeScript, Tailwind CSS
 
 ### Invitro (Lab Test Center)
-**Status:** Live (https://invitro-iota.vercel.app) | **Type:** Lab Management Dashboard | **Visibility:** Public
+**Status:** Live (https://invitro-iota.vercel.app) | **Type:** Electron Desktop App | **Visibility:** Public
 - Lab testing center management interface
 - Features: Appointment scheduling, result tracking, test management
-- Tech: React, TypeScript, Tailwind CSS
+- Tech: React, TypeScript, Tailwind CSS, Electron 43
+- Distribution: Windows installer, auto-updates
 
 ---
 
-## 📦 TEMPLATE PROJECTS & EXPERIMENTAL
+## TEMPLATE PROJECTS & EXPERIMENTAL
 
 ### CMS-demo
 **Status:** Demo | **Type:** Church System Demo | **Visibility:** Public
@@ -152,7 +118,7 @@ Full-stack developer with expertise in web applications, desktop tools, mobile a
 
 ---
 
-## 🔄 COLLABORATIVE REPOSITORIES
+## COLLABORATIVE REPOSITORIES
 
 **Access to shared projects:**
 - CUA Core Backend
@@ -166,7 +132,7 @@ Full-stack developer with expertise in web applications, desktop tools, mobile a
 
 ---
 
-## 📊 TECHNOLOGY STACK SUMMARY
+## TECHNOLOGY STACK SUMMARY
 
 ### Frontend
 - **Frameworks:** React 18/19, Next.js 16, React Native/Expo
@@ -205,9 +171,9 @@ Full-stack developer with expertise in web applications, desktop tools, mobile a
 
 ---
 
-## 🎯 KEY ACHIEVEMENTS
+## KEY ACHIEVEMENTS
 
-✅ **17 Production-Ready Projects** across web, desktop, and mobile  
+✅ **17 Projects** across web, desktop, and mobile  
 ✅ **Full-Stack Development** from database to UI  
 ✅ **Real-World Systems** serving educational and institutional needs  
 ✅ **Desktop Application Publishing** with auto-update capabilities  
@@ -218,7 +184,7 @@ Full-stack developer with expertise in web applications, desktop tools, mobile a
 
 ---
 
-## 💼 BUSINESS VALUE
+## BUSINESS VALUE
 
 - **Educational Platforms:** 2 complete academy systems (Ace, PCAcademy)
 - **Church Management:** 3 complete systems for church operations
@@ -229,28 +195,27 @@ Full-stack developer with expertise in web applications, desktop tools, mobile a
 
 ---
 
-## 📈 Project Statistics
+## Project Statistics
 
 | Category | Count | Status |
 |----------|-------|--------|
-| Live/Production | 6 | ✅ Active |
-| Development | 5 | 🔄 In Progress |
-| Complete | 6 | ✓ Finished |
+| Live/Production | 6 | Active |
+| Development | 5 | In Progress |
+| Complete | 6 | Finished |
 | **Total** | **17** | **Ready for Portfolio** |
 
 ---
 
-## 🔗 Live Deployments
+## Live Deployments
 
 - **Concord:** https://concord-dun.vercel.app
 - **Invitro LIMS:** https://invitro-iota.vercel.app
-- **PhiNova:** https://phi-nova.vercel.app
-- **GoonCORP:** Public repository
-- **CMS-demo:** Public repository
+- **PhiNova:** https://phinova.dev
+- **Aura:** https://auratechsolutionsgh.org
 
 ---
 
-## 🚀 Quick Start for Hiring Managers
+## Quick Start for Hiring Managers
 
 **Looking for:**
 - Full-stack development capability? → See Church Management System, PCAcademy
