@@ -4,6 +4,15 @@ All notable changes to the Orient Fees Tracker system are documented below in pl
 
 ---
 
+## [1.2.1] - 2026-10-01
+
+### Added & Improved
+* **Compact Daily Report Layout:** Restructured daily collection ledger reports into single consolidated tables per fee category with inline class banner rows, drastically reducing font sizes, line spacing, and total printable page count.
+* **Top-Aligned Header & Single-Line Meta Bar:** Combined title, academic year, term, and date details into a space-saving horizontal header bar with compact logo sizing.
+* **Seamless Multi-Page Table Flows:** Optimized page break rules to break cleanly across individual table rows without dropping large empty white spaces at page bottoms.
+
+---
+
 ## [1.2.0] - 2026-08-27
 
 ### Added

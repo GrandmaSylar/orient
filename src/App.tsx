@@ -36,7 +36,7 @@ function App() {
   const [splashFadeOut, setSplashFadeOut] = useState(false);
 
   // Status & Version States
-  const [appVersion, setAppVersion] = useState('1.1.0');
+  const [appVersion, setAppVersion] = useState('1.2.1');
   const [dbStatus, setDbStatus] = useState<{
     status: 'Connected' | 'Disconnected' | 'Not Configured' | 'Checking';
     latency: number;

@@ -49,7 +49,7 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
 
   // Preview Modal States
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [reportFontSize, setReportFontSize] = useState<number>(9);
+  const [reportFontSize, setReportFontSize] = useState<number>(8.5);
   const [reportFontBold, setReportFontBold] = useState<boolean>(true);
 
   const [orgConfig, setOrgConfig] = useState<any>({
@@ -202,54 +202,66 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
     let globalIndex = 1; // Running row number sequential index across all classes
 
     Object.values(productGroups).forEach((prodGroup) => {
+      const classEntries = Object.values(prodGroup.classes);
+
       tableSectionsHtml += `
         <div class="product-section">
           <div class="product-header">${prodGroup.productName}</div>
+          <table class="report-table">
+            <thead>
+              <tr class="table-header-row">
+                <th style="width: 7%">R/N</th>
+                <th style="width: 20%">Admission No</th>
+                <th style="width: 43%">Student Name</th>
+                <th style="width: 18%; text-align: right;">Amount(Gh¢)</th>
+                <th style="width: 12%; text-align: right;">Cashier</th>
+              </tr>
+            </thead>
+            <tbody>
       `;
 
-      Object.values(prodGroup.classes).forEach((classGroup) => {
+      classEntries.forEach((classGroup) => {
         tableSectionsHtml += `
-          <div class="class-group-container">
-            <div class="class-header">Class: ${classGroup.className}</div>
-            <table class="report-table">
-              <thead>
-                <tr class="table-header-row">
-                  <th style="width: 8%">R/N</th>
-                  <th style="width: 22%">Admission No</th>
-                  <th style="width: 42%">Student Name</th>
-                  <th style="width: 18%; text-align: right;">Amount(Gh¢)</th>
-                  <th style="width: 10%; text-align: right;">Cashier</th>
-                </tr>
-              </thead>
-              <tbody>
+          <tr class="class-header-row">
+            <td colspan="5">CLASS: ${classGroup.className}</td>
+          </tr>
         `;
 
         classGroup.transactions.forEach((tx) => {
           tableSectionsHtml += `
-            <tr>
-              <td style="font-weight: 800;">${globalIndex}</td>
-              <td style="font-family: monospace; font-weight: 800;">${tx.student_id_code}</td>
-              <td style="font-weight: 800;">${tx.student_name}</td>
-              <td style="text-align: right; font-weight: 900;">${tx.amount.toFixed(2)}</td>
-              <td style="text-align: right; font-weight: 800;">${tx.cashier_username}</td>
+            <tr class="tx-row">
+              <td style="font-weight: var(--font-weight-bold);">${globalIndex}</td>
+              <td style="font-family: 'Courier New', monospace; font-weight: var(--font-weight-bold);">${tx.student_id_code}</td>
+              <td style="font-weight: var(--font-weight-bold);">${tx.student_name}</td>
+              <td style="text-align: right; font-weight: var(--font-weight-heavy);">${tx.amount.toFixed(2)}</td>
+              <td style="text-align: right; font-weight: var(--font-weight-bold);">${tx.cashier_username}</td>
             </tr>
           `;
           globalIndex++;
         });
 
         tableSectionsHtml += `
-                <tr class="subtotal-tr">
-                  <td colspan="3" style="text-align: right; border: none; font-weight: 900; font-size: 10pt;">Subtotal (${classGroup.className}):</td>
-                  <td style="text-align: right; font-weight: 900; border-top: 2px solid #000; border-bottom: 3px double #000; font-size: 10.5pt;">${classGroup.subtotal.toFixed(2)}</td>
-                  <td style="border: none;"></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <tr class="subtotal-tr">
+            <td colspan="3" style="text-align: right; font-weight: var(--font-weight-heavy);">Subtotal (${classGroup.className}):</td>
+            <td style="text-align: right; font-weight: var(--font-weight-heavy); border-top: 1px solid #000; border-bottom: 2px double #000;">${classGroup.subtotal.toFixed(2)}</td>
+            <td></td>
+          </tr>
         `;
       });
 
+      if (classEntries.length > 1) {
+        tableSectionsHtml += `
+          <tr class="product-total-tr">
+            <td colspan="3" style="text-align: right; font-weight: var(--font-weight-heavy);">TOTAL ${prodGroup.productName}:</td>
+            <td style="text-align: right; font-weight: var(--font-weight-heavy); border-top: 1.5px solid #000; border-bottom: 3px double #000;">${prodGroup.productTotal.toFixed(2)}</td>
+            <td></td>
+          </tr>
+        `;
+      }
+
       tableSectionsHtml += `
+            </tbody>
+          </table>
         </div>
       `;
     });
@@ -262,15 +274,15 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
         <style>
           @page {
             size: A4 portrait;
-            margin: 10mm;
+            margin: 6mm 8mm;
           }
           *, *:before, *:after {
             box-sizing: border-box;
           }
           :root {
             --base-font-size: ${fontSize}pt;
-            --font-weight-normal: ${isBold ? '800' : '650'};
-            --font-weight-bold: ${isBold ? '900' : '700'};
+            --font-weight-normal: ${isBold ? '700' : '600'};
+            --font-weight-bold: ${isBold ? '800' : '700'};
             --font-weight-heavy: ${isBold ? '900' : '800'};
           }
           html, body {
@@ -279,22 +291,22 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
             width: 100%;
           }
           body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: #000;
             font-size: var(--base-font-size);
+            line-height: 1.15;
             font-weight: var(--font-weight-normal);
             background-color: white;
             position: relative;
-            box-sizing: border-box;
           }
           .watermark {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-25deg);
-            font-size: 45pt;
+            font-size: 40pt;
             font-weight: 900;
-            color: rgba(203, 213, 225, 0.25);
+            color: rgba(203, 213, 225, 0.18);
             z-index: -1;
             white-space: nowrap;
             pointer-events: none;
@@ -303,10 +315,10 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
           .header-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 6px;
+            margin-bottom: 3px;
           }
           .header-logo {
-            width: 70px;
+            width: 50px;
             vertical-align: middle;
             text-align: center;
           }
@@ -316,148 +328,165 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
           }
           .header-text h2 {
             margin: 0;
-            font-size: calc(var(--base-font-size) * 1.55);
+            font-size: calc(var(--base-font-size) * 1.35);
             font-weight: var(--font-weight-heavy);
             color: #000;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
+            line-height: 1.1;
           }
           .header-text p {
-            margin: 2px 0 0 0;
-            font-size: calc(var(--base-font-size) * 1.05);
+            margin: 1px 0 0 0;
+            font-size: calc(var(--base-font-size) * 0.95);
             font-weight: var(--font-weight-bold);
-            color: #000;
+            color: #1e293b;
           }
           .divider {
-            border-top: 2px solid #000;
-            margin: 6px 0;
+            border-top: 1.5px solid #000;
+            margin: 3px 0 4px 0;
+          }
+          .report-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 3px 8px;
+            margin-bottom: 6px;
+            border-radius: 2px;
+            font-size: calc(var(--base-font-size) * 0.95);
           }
           .report-title {
-            text-align: center;
-            font-size: calc(var(--base-font-size) * 1.33);
+            font-size: calc(var(--base-font-size) * 1.15);
             font-weight: var(--font-weight-heavy);
-            margin: 6px 0 10px 0;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            text-decoration: underline;
+            letter-spacing: 0.3px;
             color: #000;
           }
-          .report-meta-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 14px;
+          .report-meta-item {
+            font-weight: var(--font-weight-normal);
           }
-          .report-meta-table td {
-            padding: 3px 0;
-            font-size: calc(var(--base-font-size) * 1.05);
-            font-weight: var(--font-weight-bold);
+          .report-meta-item strong {
+            font-weight: var(--font-weight-heavy);
             color: #000;
           }
           .product-section {
-            margin-bottom: 18px;
+            margin-bottom: 8px;
           }
           .product-header {
-            font-size: calc(var(--base-font-size) * 1.28);
+            font-size: calc(var(--base-font-size) * 1.1);
             font-weight: var(--font-weight-heavy);
             color: #000;
-            padding: 3px 0;
-            margin-bottom: 8px;
+            padding: 2px 6px;
+            margin-bottom: 3px;
             text-transform: uppercase;
-            border-bottom: 2px solid #000;
-            text-align: center;
-          }
-          .class-group-container {
-            margin-bottom: 15px;
-            page-break-inside: avoid;
-          }
-          .class-header {
-            font-size: calc(var(--base-font-size) * 1.16);
-            font-weight: var(--font-weight-heavy);
-            color: #000;
-            margin: 8px 0 4px 0;
-            text-align: center;
-            text-transform: uppercase;
+            background-color: #e2e8f0;
+            border: 1px solid #cbd5e1;
+            border-bottom: none;
+            letter-spacing: 0.3px;
           }
           .report-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 4px;
+            table-layout: fixed;
+          }
+          .report-table tr {
+            page-break-inside: avoid;
           }
           .table-header-row th {
             color: #000;
             font-weight: var(--font-weight-heavy);
-            padding: 5px 6px;
-            border-top: 2px solid #000;
-            border-bottom: 2px solid #000;
+            padding: 2.5px 5px;
+            border: 1px solid #475569;
+            background-color: #f1f5f9;
             text-align: left;
-            font-size: var(--base-font-size);
+            font-size: calc(var(--base-font-size) * 0.95);
           }
-          .report-table td {
-            padding: 4px 6px;
-            border: 1.5px solid #334155;
+          .class-header-row td {
+            background-color: #f8fafc;
+            font-weight: var(--font-weight-heavy);
+            font-size: calc(var(--base-font-size) * 0.95);
+            padding: 2px 5px;
+            border: 1px solid #64748b;
+            text-transform: uppercase;
+            color: #0f172a;
+            letter-spacing: 0.2px;
+          }
+          .tx-row td {
+            padding: 2px 5px;
+            border: 1px solid #94a3b8;
             color: #000;
             font-size: var(--base-font-size);
           }
           .subtotal-tr td {
-            padding: 4px 6px;
+            padding: 2.5px 5px;
+            font-size: calc(var(--base-font-size) * 0.95);
+            background-color: #fafafa;
+          }
+          .product-total-tr td {
+            padding: 3px 5px;
+            font-size: calc(var(--base-font-size) * 1.0);
+            background-color: #f1f5f9;
           }
           .grand-total-box {
-            border-top: 2px solid #000;
+            border-top: 1.5px solid #000;
             border-bottom: 3px double #000;
-            padding: 8px 12px;
-            font-size: calc(var(--base-font-size) * 1.33);
+            padding: 4px 8px;
+            font-size: calc(var(--base-font-size) * 1.15);
             font-weight: var(--font-weight-heavy);
             color: #000;
-            margin-top: 18px;
-            margin-bottom: 20px;
+            margin-top: 8px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             page-break-inside: avoid;
+            background-color: #f8fafc;
           }
           .signatures {
             display: flex;
             justify-content: space-between;
-            margin-top: 30px;
+            margin-top: 14px;
             page-break-inside: avoid;
           }
           .sig-box {
-            width: 200px;
+            width: 180px;
             text-align: center;
-            font-size: var(--base-font-size);
+            font-size: calc(var(--base-font-size) * 0.9);
             font-weight: var(--font-weight-bold);
             color: #000;
           }
           .sig-line {
-            border-top: 2px solid #000;
-            margin-top: 30px;
-            padding-top: 4px;
+            border-top: 1.5px solid #000;
+            margin-top: 16px;
+            padding-top: 2px;
             font-weight: var(--font-weight-heavy);
           }
           .stamp-box {
-            width: 110px;
-            height: 44px;
-            border: 2px dashed #dc2626;
-            border-radius: 4px;
+            width: 90px;
+            height: 32px;
+            border: 1.5px dashed #dc2626;
+            border-radius: 3px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             color: #dc2626;
-            font-size: var(--base-font-size);
+            font-size: calc(var(--base-font-size) * 0.85);
             font-weight: var(--font-weight-heavy);
-            transform: rotate(-4deg);
-            margin-bottom: -15px;
+            transform: rotate(-3deg);
+            margin-bottom: -10px;
             opacity: 0.9;
           }
           .footer-container {
-            font-size: calc(var(--base-font-size) * 0.9);
+            font-size: calc(var(--base-font-size) * 0.85);
             font-weight: var(--font-weight-normal);
-            color: #475569;
+            color: #64748b;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 1.5px solid #cbd5e1;
-            padding-top: 4px;
-            margin-top: 20px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 2px;
+            margin-top: 8px;
           }
           @media print {
             body {
@@ -472,8 +501,8 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
         <table class="header-table">
           <tr>
             <td class="header-logo">
-              ${orgConfig.logo_url ? `<img src="${orgConfig.logo_url}" style="max-height: 55px; max-width: 70px; object-fit: contain;" />` : `
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 48px; height: 48px; color: #000;">
+              ${orgConfig.logo_url ? `<img src="${orgConfig.logo_url}" style="max-height: 42px; max-width: 50px; object-fit: contain;" />` : `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 36px; height: 36px; color: #000;">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                   <path d="M2 12h20M12 2v20" />
@@ -482,29 +511,19 @@ export const Reports: React.FC<ReportsProps> = ({ showDialog }) => {
             </td>
             <td class="header-text">
               <h2>${orgConfig.org_name}</h2>
-              <p>${orgConfig.location}</p>
-              <p style="font-size: calc(var(--base-font-size) * 1.05); font-weight: 700; margin-top: 1px;">${orgConfig.telephone}</p>
+              <p>${orgConfig.location} &bull; ${orgConfig.telephone}</p>
             </td>
           </tr>
         </table>
         
         <div class="divider"></div>
         
-        <div class="report-title">Daily Fees Collection</div>
-        
-        <table class="report-meta-table">
-          <tr>
-            <td style="font-weight: 900; width: 15%;">Academic Year:</td>
-            <td style="width: 35%; border-bottom: 1.5px solid #000;">${academicYear}</td>
-            <td style="font-weight: 900; width: 10%; text-align: right; padding-right: 10px;">Date:</td>
-            <td style="border-bottom: 1.5px solid #000;">${formattedDate}</td>
-          </tr>
-          <tr>
-            <td style="font-weight: 900;">Term:</td>
-            <td style="border-bottom: 1.5px solid #000; text-transform: uppercase;">${termName}</td>
-            <td colspan="2"></td>
-          </tr>
-        </table>
+        <div class="report-header-bar">
+          <div class="report-title">Daily Fees Collection Ledger</div>
+          <div class="report-meta-item">Academic Year: <strong>${academicYear}</strong></div>
+          <div class="report-meta-item">Term: <strong>${termName}</strong></div>
+          <div class="report-meta-item">Date: <strong>${formattedDate}</strong></div>
+        </div>
 
         ${tableSectionsHtml}
 
