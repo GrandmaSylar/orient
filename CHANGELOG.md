@@ -4,6 +4,13 @@ All notable changes to the Orient Fees Tracker system are documented below in pl
 
 ---
 
+## [1.2.2] - 2026-11-05
+
+### Maintenance & Production Release
+* **Version Bump & Production Bundle:** Prepared and verified production distribution bundle and release build configurations.
+
+---
+
 ## [1.2.1] - 2026-10-01
 
 ### Added & Improved
